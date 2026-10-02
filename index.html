@@ -1,64 +1,29 @@
-```html
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Mahjong Match-2 Connect Duel PJOK SD</title>
-    <!-- Tailwind CSS -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mahjong Match-3 Duel PJOK SD</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Outfit:wght@500;700;900&display=swap" rel="stylesheet">
+    
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     fontFamily: {
-                        fredoka: ['Fredoka', 'sans-serif'],
                         sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        outfit: ['Outfit', 'sans-serif'],
                     },
                     colors: {
-                        sea: {
-                            950: '#010b14',
-                            900: '#021224',
-                            800: '#072e4d',
-                            700: '#0e436d',
-                            600: '#145c92',
-                            500: '#1b7bb9',
-                            400: '#2da1e7',
-                            300: '#64c4f9',
-                            200: '#a3e0fb',
-                            100: '#e0f4ff',
-                        }
-                    },
-                    animation: {
-                        'float': 'float 6s ease-in-out infinite',
-                        'pulse-glow': 'pulseGlow 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                        'tile-pop': 'tilePop 0.25s ease-out',
-                        'shake': 'shake 0.4s ease-in-out',
-                    },
-                    keyframes: {
-                        float: {
-                            '0%, 100%': { transform: 'translateY(0px)' },
-                            '50%': { transform: 'translateY(-10px)' },
-                        },
-                        pulseGlow: {
-                            '0%, 100%': { opacity: 1, filter: 'drop-shadow(0 0 12px rgba(45, 161, 231, 0.8))' },
-                            '50%': { opacity: 0.6, filter: 'drop-shadow(0 0 4px rgba(45, 161, 231, 0.3))' },
-                        },
-                        tilePop: {
-                            '0%': { transform: 'scale(0.6)', opacity: '0' },
-                            '100%': { transform: 'scale(1)', opacity: '1' },
-                        },
-                        shake: {
-                            '0%, 100%': { transform: 'translateX(0)' },
-                            '20%, 60%': { transform: 'translateX(-5px)' },
-                            '40%, 80%': { transform: 'translateX(5px)' },
+                        ocean: {
+                            800: '#0B2545',
+                            900: '#081B33',
+                            glow: '#00F0FF',
                         }
                     }
                 }
@@ -67,1296 +32,1318 @@
     </script>
 
     <style>
-        * {
-            box-sizing: border-box;
-            touch-action: manipulation;
-        }
-
         body {
-            background: linear-gradient(135deg, #010b14 0%, #072e4d 40%, #0e5080 70%, #03192e 100%);
-            min-height: 100vh;
-            color: #ffffff;
+            font-family: 'Plus Jakarta Sans', sans-serif;
             user-select: none;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            overflow-x: hidden;
+            background-color: #051329;
+            color: #ffffff;
         }
 
-        /* 16:9 Viewport Fixed Stage Container */
-        .stage-16-9 {
-            aspect-ratio: 16 / 9;
-            width: 100vw;
-            max-width: 100vw;
-            height: auto;
-            max-height: 100vh;
-            margin: auto;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            position: relative;
-            overflow: hidden;
-        }
-
-        @media (min-aspect-ratio: 16/9) {
-            .stage-16-9 {
-                height: 100vh;
-                width: calc(100vh * 16 / 9);
-            }
-        }
-
-        @media (max-aspect-ratio: 16/9) {
-            .stage-16-9 {
-                width: 100vw;
-                height: calc(100vw * 9 / 16);
-            }
-        }
-
+        /* Dynamic Ocean Background Overlay with high 90% image visibility */
         .ocean-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: -1;
-            overflow: hidden;
-            pointer-events: none;
+            background-image: linear-gradient(to bottom, rgba(5, 19, 41, 0.25), rgba(8, 27, 51, 0.20)),
+                              url('https://raw.githubusercontent.com/pakarpjok/CONTOH/main/cover%20mahjong.png'),
+                              url('https://github.com/pakarpjok/CONTOH/blob/main/cover%20mahjong.png?raw=true');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
         }
 
-        .bubble {
-            position: absolute;
-            background: rgba(255, 255, 255, 0.12);
-            border-radius: 50%;
-            backdrop-filter: blur(2px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            animation: rise 12s infinite linear;
-        }
-
-        @keyframes rise {
-            0% { bottom: -100px; transform: translateX(0) scale(1); }
-            50% { transform: translateX(60px) scale(1.15); }
-            100% { bottom: 108vh; transform: translateX(-30px) scale(0.85); }
-        }
-
+        /* Glassmorphism Cards */
         .glass-panel {
-            background: rgba(7, 46, 77, 0.82);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(100, 196, 249, 0.35);
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+            background: rgba(13, 37, 69, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.45);
         }
 
-        /* Mahjong Onet Tile Styling */
-        .connect-tile {
-            position: relative;
-            background: linear-gradient(145deg, #ffffff, #e0f2fe);
-            border-radius: 6px;
-            border: 1.5px solid #bae6fd;
-            box-shadow: 0 2px 0 #0284c7, 0 3px 6px rgba(0, 0, 0, 0.3);
-            transition: all 0.1s ease;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: clamp(0.7rem, 1.8vw, 1.5rem);
-            width: 100%;
-            height: 100%;
-            line-height: 1;
+        .glass-panel-p2 {
+            background: rgba(45, 18, 66, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 0, 180, 0.35);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.45);
         }
 
-        .connect-tile:hover:not(.disabled) {
-            transform: translateY(-2px) scale(1.04);
-            box-shadow: 0 4px 0 #0284c7, 0 6px 10px rgba(0, 0, 0, 0.4);
-            filter: brightness(1.08);
+        /* Mahjong Tile Styling */
+        .mahjong-tile {
+            perspective: 1000px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
         }
 
-        .connect-tile.selected {
-            background: linear-gradient(145deg, #fef08a, #fde047) !important;
-            border-color: #facc15 !important;
-            box-shadow: 0 0 12px #facc15, 0 2px 0 #ca8a04 !important;
-            transform: scale(1.08);
-            z-index: 10;
+        .mahjong-tile-inner {
+            background: linear-gradient(145deg, #ffffff, #e6f4ff);
+            border: 2px solid #38bdf8;
+            border-bottom: 5px solid #0284c7;
+            border-right: 4px solid #0369a1;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
         }
 
-        .connect-tile.disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-            filter: grayscale(0.6);
+        .mahjong-tile.selected .mahjong-tile-inner {
+            background: linear-gradient(145deg, #fffbeb, #fef3c7);
+            border-color: #f59e0b;
+            border-bottom: 5px solid #d97706;
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.9);
         }
 
-        .empty-slot {
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
+        .mahjong-tile-p2-inner {
+            background: linear-gradient(145deg, #ffffff, #fae8ff);
+            border: 2px solid #f0abfc;
+            border-bottom: 5px solid #c084fc;
+            border-right: 4px solid #a855f7;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
         }
 
-        /* Connecting SVG Path Animation */
+        .mahjong-tile-p2.selected .mahjong-tile-p2-inner {
+            background: linear-gradient(145deg, #fffbeb, #fef3c7);
+            border-color: #f59e0b;
+            border-bottom: 5px solid #d97706;
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.9);
+        }
+
+        /* Connecting Path Glow */
         .path-line {
-            stroke: #facc15;
-            stroke-width: 4;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-            filter: drop-shadow(0 0 8px #facc15);
-            animation: lineGlow 0.3s ease-in-out infinite alternate;
+            stroke-dasharray: 8;
+            animation: dash 0.8s linear infinite;
+            filter: drop-shadow(0px 0px 8px #00f0ff);
         }
 
-        @keyframes lineGlow {
-            from { stroke-width: 3; stroke: #facc15; }
-            to { stroke-width: 6; stroke: #38bdf8; }
+        .path-line-p2 {
+            stroke-dasharray: 8;
+            animation: dash 0.8s linear infinite;
+            filter: drop-shadow(0px 0px 8px #ff00b4);
         }
 
+        @keyframes dash {
+            to {
+                stroke-dashoffset: -16;
+            }
+        }
+
+        /* Button Effects */
+        .btn-futuristic {
+            background: linear-gradient(135deg, #00f0ff 0%, #0072ff 100%);
+            box-shadow: 0 4px 15px rgba(0, 240, 255, 0.4);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-futuristic:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 6px 20px rgba(0, 240, 255, 0.6);
+        }
+
+        /* Pulse animations */
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 0.85; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.03); }
+        }
+
+        .animate-pulse-glow {
+            animation: pulse-glow 2s infinite ease-in-out;
+        }
+
+        /* Custom Scrollbar */
         ::-webkit-scrollbar {
-            width: 5px;
+            width: 6px;
         }
         ::-webkit-scrollbar-track {
-            background: rgba(3, 25, 46, 0.5);
+            background: rgba(5, 19, 41, 0.5);
         }
         ::-webkit-scrollbar-thumb {
-            background: #1b7bb9;
-            border-radius: 4px;
+            background: #00f0ff;
+            border-radius: 3px;
         }
     </style>
 </head>
-<body class="font-sans antialiased text-white selection:bg-sea-400 selection:text-sea-900">
+<body class="ocean-bg min-h-screen text-slate-100 flex flex-col justify-between relative overflow-x-hidden">
 
-    <div class="ocean-bg" id="oceanBubbles"></div>
-
-    <!-- MAIN MENU SCREEN -->
-    <div id="mainMenuScreen" class="stage-16-9 p-3 sm:p-6 flex flex-col items-center justify-between z-10 text-center">
-        
-        <!-- Header Banner -->
-        <div class="space-y-1.5 my-auto animate-float">
-            <div class="inline-flex items-center gap-2 bg-sea-800/80 px-4 py-1.5 rounded-full border border-sea-400/40 shadow-lg text-xs font-bold text-sea-200">
-                <i class="fa-solid fa-graduation-cap text-yellow-300"></i> MEDIA PEMBELAJARAN PJOK SD
+    <!-- TOP NAVIGATION BAR WITH REPLAY, PAUSE & HOME CONTROLS -->
+    <header class="w-full z-40 px-3 sm:px-6 py-2.5 glass-panel border-b border-cyan-500/40 flex flex-wrap justify-between items-center sticky top-0 shadow-2xl">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/30">
+                <i class="fa-solid font-bold text-xl text-white">🀄</i>
             </div>
-            <h1 class="font-fredoka text-3xl sm:text-5xl md:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-amber-200 to-yellow-400 drop-shadow-[0_4px_10px_rgba(0,0,0,0.8)] tracking-wide">
-                MAHJONG CONNECT DUEL
+            <div>
+                <h1 class="font-outfit font-black text-base sm:text-xl tracking-wide bg-gradient-to-r from-cyan-300 via-white to-blue-400 bg-clip-text text-transparent">
+                    MAHJONG MATCH-3 DUEL
+                </h1>
+                <p class="text-[11px] text-cyan-300/90 font-semibold hidden sm:block">PJOK SD Interaktif & Gamifikasi Edukasi</p>
+            </div>
+        </div>
+
+        <!-- Gameplay Menu Navigation Bar Controls -->
+        <div class="flex items-center space-x-1.5 sm:space-x-2">
+            <!-- Home Button -->
+            <button onclick="showMainMenu()" title="Home / Menu Utama" class="px-3 py-2 rounded-xl glass-panel hover:border-cyan-400 hover:bg-cyan-500/20 text-cyan-300 transition-all flex items-center gap-1.5 border border-cyan-500/40">
+                <i class="fa-solid fa-house text-base text-cyan-400"></i>
+                <span class="text-xs font-bold hidden md:inline">Home</span>
+            </button>
+
+            <!-- Replay / Reset Button -->
+            <button onclick="restartGame()" title="Replay / Main Ulang" class="px-3 py-2 rounded-xl glass-panel hover:border-amber-400 hover:bg-amber-500/20 text-amber-300 transition-all flex items-center gap-1.5 border border-amber-500/40">
+                <i class="fa-solid fa-rotate-right text-base text-amber-400"></i>
+                <span class="text-xs font-bold hidden md:inline">Replay</span>
+            </button>
+
+            <!-- Pause / Resume Button -->
+            <button onclick="togglePauseGame()" id="btn-pause" title="Pause / Jeda Permainan" class="px-3 py-2 rounded-xl glass-panel hover:border-fuchsia-400 hover:bg-fuchsia-500/20 text-fuchsia-300 transition-all flex items-center gap-1.5 border border-fuchsia-500/40">
+                <i id="icon-pause" class="fa-solid fa-pause text-base text-fuchsia-400"></i>
+                <span id="text-pause" class="text-xs font-bold hidden md:inline">Pause</span>
+            </button>
+
+            <div class="h-6 w-px bg-cyan-500/30 mx-1"></div>
+
+            <!-- Sound Toggle -->
+            <button onclick="toggleAudio()" id="btn-sound" title="Pengaturan Suara" class="p-2 sm:px-3 sm:py-2 rounded-xl glass-panel hover:border-cyan-400 text-cyan-300 transition-all border border-cyan-500/30">
+                <i class="fa-solid fa-volume-high text-base"></i>
+            </button>
+
+            <!-- Panduan -->
+            <button onclick="openHowToPlay()" title="Cara Bermain" class="p-2 sm:px-3 sm:py-2 rounded-xl glass-panel hover:border-cyan-400 text-cyan-300 transition-all flex items-center gap-1.5 border border-cyan-500/30">
+                <i class="fa-solid fa-circle-question text-base"></i>
+                <span class="text-xs font-bold hidden lg:inline">Panduan</span>
+            </button>
+
+            <!-- Tentang -->
+            <button onclick="openAboutModal()" title="Tentang Pengembang" class="p-2 sm:px-3 sm:py-2 rounded-xl glass-panel hover:border-cyan-400 text-cyan-300 transition-all flex items-center gap-1.5 border border-cyan-500/30">
+                <i class="fa-solid fa-circle-info text-base"></i>
+                <span class="text-xs font-bold hidden lg:inline">Tentang</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN MENU CONTAINER -->
+    <div id="main-menu" class="fixed inset-0 z-50 flex items-center justify-center p-4 ocean-bg bg-black/40">
+        
+        <!-- TOMBOL FULL SCREEN POJOK KANAN ATAS COVER -->
+        <button onclick="toggleFullScreen()" title="Layar Penuh / Fullscreen" class="absolute top-4 right-4 sm:top-6 sm:right-6 z-50 p-3 rounded-2xl glass-panel hover:border-cyan-400 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/40 shadow-xl transition-all flex items-center gap-2">
+            <i id="fullscreen-icon" class="fa-solid fa-expand text-lg"></i>
+            <span class="text-xs font-bold hidden sm:inline">Full Screen</span>
+        </button>
+
+        <div class="max-w-xl w-full glass-panel rounded-3xl p-6 sm:p-8 text-center border-2 border-cyan-400/50 relative shadow-2xl overflow-hidden backdrop-blur-md">
+            <!-- Decorative Light Glows -->
+            <div class="absolute -top-12 -left-12 w-40 h-40 bg-cyan-500/30 rounded-full blur-3xl"></div>
+            <div class="absolute -bottom-12 -right-12 w-40 h-40 bg-fuchsia-500/30 rounded-full blur-3xl"></div>
+
+            <div class="inline-block p-4 rounded-2xl bg-gradient-to-br from-cyan-500/30 to-blue-600/40 mb-4 border border-cyan-400/40 shadow-lg">
+                <span class="text-6xl animate-bounce inline-block">🏓</span>
+                <span class="text-6xl animate-pulse inline-block mx-1">⚽</span>
+                <span class="text-6xl animate-bounce inline-block">🏃</span>
+            </div>
+
+            <h1 class="font-outfit text-3xl sm:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-white to-blue-300 tracking-wider mb-2 drop-shadow-md">
+                MAHJONG MATCH-3 DUEL
             </h1>
-            <p class="text-xs sm:text-sm md:text-base text-sea-200 font-semibold max-w-xl mx-auto">
-                Hubungkan 2 Ubin Kembar PJOK ➡️ Jawab Soal Kuis ➡️ Kalahkan Lawan!
-            </p>
-        </div>
+            <p class="text-cyan-200 text-sm font-bold mb-6 tracking-wide">Pendidikan Jasmani, Olahraga & Kesehatan (PJOK) SD</p>
 
-        <!-- Decorative Tile Showcase -->
-        <div class="flex justify-center items-center gap-2 sm:gap-3 my-2">
-            <div class="w-9 h-11 sm:w-12 sm:h-14 connect-tile">⚽</div>
-            <div class="w-9 h-11 sm:w-12 sm:h-14 connect-tile">ߏ</div>
-            <div class="w-9 h-11 sm:w-12 sm:h-14 connect-tile selected">ߏ</div>
-            <div class="w-9 h-11 sm:w-12 sm:h-14 connect-tile">ߏ</div>
-            <div class="w-9 h-11 sm:w-12 sm:h-14 connect-tile">ߥ</div>
-        </div>
+            <!-- Mode Buttons -->
+            <div class="space-y-3.5 max-w-md mx-auto">
+                <button onclick="openPlayerSetup()" class="w-full py-4 rounded-2xl btn-futuristic text-white font-outfit font-black text-lg tracking-wider flex items-center justify-center gap-3">
+                    <i class="fa-solid fa-gamepad text-2xl"></i>
+                    BERMAIN (DUEL 2 PLAYER)
+                </button>
+                <button onclick="openHowToPlay()" class="w-full py-3.5 rounded-2xl glass-panel hover:bg-cyan-500/30 text-cyan-200 font-bold text-md border border-cyan-400/40 flex items-center justify-center gap-3 transition">
+                    <i class="fa-solid fa-book-open text-xl text-cyan-400"></i>
+                    CARA BERMAIN
+                </button>
+                <button onclick="openAboutModal()" class="w-full py-3.5 rounded-2xl glass-panel hover:bg-cyan-500/30 text-cyan-200 font-bold text-md border border-cyan-400/40 flex items-center justify-center gap-3 transition">
+                    <i class="fa-solid fa-id-card text-xl text-cyan-400"></i>
+                    TENTANG PENGEMBANG
+                </button>
+            </div>
 
-        <!-- Action Buttons -->
-        <div class="flex flex-col sm:flex-row gap-3 w-full max-w-md mx-auto my-auto">
-            <button onclick="startGame()" class="flex-1 group relative px-6 py-3.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-fredoka text-lg sm:text-xl font-bold rounded-2xl shadow-[0_5px_0_#065f46] active:translate-y-1 active:shadow-none transition-all flex items-center justify-center gap-2.5 border-2 border-emerald-300">
-                <i class="fa-solid fa-gamepad text-yellow-300 text-2xl group-hover:scale-110 transition-transform"></i>
-                BERMAIN (DUEL)
-            </button>
-
-            <button onclick="openHowToPlay()" class="px-5 py-3.5 bg-gradient-to-r from-sea-600 to-sea-500 hover:from-sea-500 hover:to-sea-400 text-white font-fredoka text-base font-bold rounded-2xl shadow-[0_4px_0_#0b3b5e] active:translate-y-1 active:shadow-none transition-all flex items-center justify-center gap-2 border border-sea-300/40">
-                <i class="fa-solid fa-book-open text-sea-200"></i>
-                Cara Bermain
-            </button>
-
-            <button onclick="openAbout()" class="px-4 py-3.5 bg-sea-800/80 hover:bg-sea-700/80 text-sea-200 font-fredoka text-base font-bold rounded-2xl border border-sea-400/30 active:scale-95 transition-all flex items-center justify-center" title="Tentang Pengembang">
-                <i class="fa-solid fa-circle-info text-yellow-300 text-xl"></i>
-            </button>
-        </div>
-
-        <!-- Footer Tagline -->
-        <div class="text-[10px] sm:text-xs text-sea-300/80 font-medium pb-1">
-            Dikembangkan oleh Guru PJOK SD Tuban, Jawa Timur • @pak.arpjok
+            <!-- Footer Badge -->
+            <div class="mt-8 pt-4 border-t border-cyan-500/30 text-xs text-cyan-200/80 flex items-center justify-center gap-2 font-semibold">
+                <i class="fa-solid fa-graduation-cap text-cyan-400"></i>
+                <span>Media Pembelajaran Gamifikasi Edukasi SD</span>
+            </div>
         </div>
     </div>
 
-    <!-- GAMEPLAY SCREEN (DUAL CONNECT BOARD - LOCKED TO 16:9 STAGE) -->
-    <div id="gameplayScreen" class="hidden stage-16-9 glass-panel rounded-xl sm:rounded-2xl p-1.5 sm:p-2.5 flex flex-col justify-between border-2 border-sea-300/40 shadow-2xl relative">
-        
-        <!-- Header Top Bar -->
-        <header class="bg-sea-900/90 rounded-xl p-1 sm:p-1.5 mb-1 flex items-center justify-between shadow-lg border border-sea-300/30 flex-shrink-0">
-            <div class="flex items-center gap-1 sm:gap-2">
-                <button onclick="confirmExitToHome()" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-red-500/80 hover:bg-red-500 text-white flex items-center justify-center shadow active:scale-95 transition-transform" title="Ke Menu Utama">
-                    <i class="fa-solid fa-house text-xs sm:text-sm"></i>
-                </button>
-                <button onclick="restartGame()" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-yellow-500/80 hover:bg-yellow-500 text-white flex items-center justify-center shadow active:scale-95 transition-transform" title="Reset/Replay">
-                    <i class="fa-solid fa-rotate-right text-xs sm:text-sm"></i>
-                </button>
-                <button onclick="togglePauseModal()" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-sea-500 hover:bg-sea-400 text-white flex items-center justify-center shadow active:scale-95 transition-transform" title="Pause Game">
-                    <i class="fa-solid fa-pause text-xs sm:text-sm"></i>
-                </button>
-            </div>
+    <!-- PLAYER SETUP MODAL -->
+    <div id="setup-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden">
+        <div class="max-w-lg w-full glass-panel rounded-3xl p-6 sm:p-8 border border-cyan-400/50 relative shadow-2xl">
+            <h2 class="text-2xl font-outfit font-bold text-center text-cyan-300 mb-6 flex items-center justify-center gap-2">
+                <i class="fa-solid fa-users text-amber-400"></i> REGISTRASI TIM PEMAIN
+            </h2>
 
-            <div class="text-center px-2">
-                <h2 class="font-fredoka text-xs sm:text-base md:text-lg font-bold text-yellow-300 tracking-wide leading-tight">
-                    MAHJONG CONNECT DUEL PJOK
-                </h2>
-                <div class="text-[8px] sm:text-[10px] text-sea-200 font-semibold hidden sm:block">Hubungkan 2 Ubin Kembar (Maks 2 Belokan) ➡️ Jawab Soal!</div>
-            </div>
-
-            <div class="flex items-center gap-1 sm:gap-2">
-                <button onclick="toggleSound()" id="soundBtn" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-sea-600 hover:bg-sea-500 text-yellow-300 flex items-center justify-center shadow active:scale-95 transition-transform">
-                    <i class="fa-solid fa-volume-high text-xs sm:text-sm"></i>
-                </button>
-            </div>
-        </header>
-
-        <!-- Dual Boards Container (2 Columns for 16:9 Layout) -->
-        <div class="flex-1 grid grid-cols-2 gap-1.5 sm:gap-2.5 items-stretch min-h-0 overflow-hidden">
-            
-            <!-- PLAYER A (LEFT SIDE - BLUE TEAM) -->
-            <div id="playerAContainer" class="bg-sea-900/60 rounded-xl p-1 sm:p-1.5 flex flex-col justify-between border border-blue-400/40 relative overflow-hidden min-h-0">
-                <!-- Player A Header -->
-                <div class="flex items-center justify-between bg-blue-950/80 p-1 sm:p-1.5 rounded-lg mb-1 border border-blue-400/30 flex-shrink-0">
-                    <div class="flex items-center gap-1 sm:gap-1.5">
-                        <div class="w-5 h-5 sm:w-7 sm:h-7 rounded-md bg-blue-500 text-white font-fredoka font-bold flex items-center justify-center text-xs shadow">
-                            A
-                        </div>
-                        <div>
-                            <div class="font-fredoka font-bold text-xs text-blue-200 leading-none">PEMAIN A</div>
-                            <div class="text-[8px] sm:text-[10px] text-blue-300 font-semibold" id="pA-streak">ߔ 0/5</div>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center gap-1.5">
-                        <div class="flex items-center gap-1 bg-red-950/80 px-1.5 py-0.5 rounded-md border border-red-500/40">
-                            <i class="fa-solid fa-heart text-red-500 text-xs animate-pulse"></i>
-                            <span id="pA-hp" class="font-fredoka font-bold text-xs text-red-200">5</span>
-                        </div>
-                        <div class="flex items-center gap-1 bg-yellow-950/80 px-1.5 py-0.5 rounded-md border border-yellow-500/40">
-                            <i class="fa-solid fa-star text-yellow-400 text-xs"></i>
-                            <span id="pA-score" class="font-fredoka font-bold text-xs text-yellow-200">0</span>
-                        </div>
+            <div class="space-y-5 mb-8">
+                <!-- Player 1 Input -->
+                <div class="p-4 rounded-2xl bg-cyan-950/70 border border-cyan-500/40">
+                    <label class="block text-xs font-bold text-cyan-300 mb-2 flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-cyan-400"></span> TIM PEMAIN 1 (SISI KIRI)
+                    </label>
+                    <div class="relative">
+                        <i class="fa-solid fa-shield-halved absolute left-3.5 top-3.5 text-cyan-400"></i>
+                        <input type="text" id="input-p1-name" value="Tim Garuda" class="w-full bg-slate-900/90 border border-cyan-500/40 rounded-xl py-2.5 pl-10 pr-4 text-white font-bold focus:outline-none focus:border-cyan-400 text-sm">
                     </div>
                 </div>
 
-                <!-- Player A Grid Area -->
-                <div class="relative flex-1 bg-sea-950/80 rounded-lg p-1 border border-sea-400/20 flex items-center justify-center min-h-0 overflow-hidden">
-                    <svg id="pA-svg" class="absolute inset-0 w-full h-full pointer-events-none z-20">
-                        <defs>
-                            <marker id="arrow-pA" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                                <path d="M 0 0 L 10 5 L 0 10 z" fill="#facc15" />
-                            </marker>
-                        </defs>
-                    </svg>
-
-                    <div id="pA-grid" class="w-full h-full grid grid-cols-8 grid-rows-8 gap-0.5 relative z-10">
-                        <!-- Grid cells injected dynamically -->
+                <!-- Player 2 Input -->
+                <div class="p-4 rounded-2xl bg-fuchsia-950/70 border border-fuchsia-500/40">
+                    <label class="block text-xs font-bold text-fuchsia-300 mb-2 flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-fuchsia-400"></span> TIM PEMAIN 2 (SISI KANAN)
+                    </label>
+                    <div class="relative">
+                        <i class="fa-solid fa-shield-halved absolute left-3.5 top-3.5 text-fuchsia-400"></i>
+                        <input type="text" id="input-p2-name" value="Tim Rajawali" class="w-full bg-slate-900/90 border border-fuchsia-500/40 rounded-xl py-2.5 pl-10 pr-4 text-white font-bold focus:outline-none focus:border-fuchsia-400 text-sm">
                     </div>
-                </div>
-
-                <!-- Player A Quiz Overlay -->
-                <div id="pA-quizModal" class="hidden absolute -inset-1 bg-sea-900/95 backdrop-blur-md z-30 p-1.5 sm:p-2 rounded-xl flex flex-col justify-start gap-1 sm:gap-1.5 border-2 border-yellow-400/80 animate-tile-pop overflow-y-auto">
-                    <div class="flex items-center justify-between bg-sea-800 p-1 rounded-md border border-sea-400/30 flex-shrink-0">
-                        <span class="font-fredoka text-yellow-300 font-bold text-[11px] sm:text-xs">
-                            <i class="fa-solid fa-circle-question mr-1"></i> SOAL PEMAIN A
-                        </span>
-                        <div class="flex items-center gap-1 bg-red-900/80 px-1.5 py-0.5 rounded-md border border-red-400/50">
-                            <i class="fa-solid fa-clock text-red-300 text-[10px] sm:text-xs"></i>
-                            <span id="pA-timer" class="font-fredoka font-bold text-red-200 text-[10px] sm:text-xs">25s</span>
-                        </div>
-                    </div>
-
-                    <div class="bg-sea-950/90 p-1.5 rounded-lg border border-sea-300/20 text-[10px] sm:text-xs font-semibold leading-tight text-sea-100 max-h-[50px] sm:max-h-[60px] overflow-y-auto flex-shrink-0" id="pA-qText">
-                        Soal PJOK akan muncul di sini...
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-1 my-auto" id="pA-qOptions">
-                        <!-- Options generated dynamically -->
-                    </div>
-
-                    <div id="pA-feedback" class="hidden text-center text-[10px] sm:text-xs font-bold p-1 rounded-md flex-shrink-0"></div>
                 </div>
             </div>
 
-            <!-- PLAYER B (RIGHT SIDE - GREEN TEAM) -->
-            <div id="playerBContainer" class="bg-sea-900/60 rounded-xl p-1 sm:p-1.5 flex flex-col justify-between border border-emerald-400/40 relative overflow-hidden min-h-0">
-                <!-- Player B Header -->
-                <div class="flex items-center justify-between bg-emerald-950/80 p-1 sm:p-1.5 rounded-lg mb-1 border border-emerald-400/30 flex-shrink-0">
-                    <div class="flex items-center gap-1 sm:gap-1.5">
-                        <div class="w-5 h-5 sm:w-7 sm:h-7 rounded-md bg-emerald-500 text-white font-fredoka font-bold flex items-center justify-center text-xs shadow">
-                            B
-                        </div>
-                        <div>
-                            <div class="font-fredoka font-bold text-xs text-emerald-200 leading-none">PEMAIN B</div>
-                            <div class="text-[8px] sm:text-[10px] text-emerald-300 font-semibold" id="pB-streak">ߔ 0/5</div>
-                        </div>
-                    </div>
-
-                    <div class="flex items-center gap-1.5">
-                        <div class="flex items-center gap-1 bg-red-950/80 px-1.5 py-0.5 rounded-md border border-red-500/40">
-                            <i class="fa-solid fa-heart text-red-500 text-xs animate-pulse"></i>
-                            <span id="pB-hp" class="font-fredoka font-bold text-xs text-red-200">5</span>
-                        </div>
-                        <div class="flex items-center gap-1 bg-yellow-950/80 px-1.5 py-0.5 rounded-md border border-yellow-500/40">
-                            <i class="fa-solid fa-star text-yellow-400 text-xs"></i>
-                            <span id="pB-score" class="font-fredoka font-bold text-xs text-yellow-200">0</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Player B Grid Area -->
-                <div class="relative flex-1 bg-sea-950/80 rounded-lg p-1 border border-sea-400/20 flex items-center justify-center min-h-0 overflow-hidden">
-                    <svg id="pB-svg" class="absolute inset-0 w-full h-full pointer-events-none z-20">
-                        <defs>
-                            <marker id="arrow-pB" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                                <path d="M 0 0 L 10 5 L 0 10 z" fill="#facc15" />
-                            </marker>
-                        </defs>
-                    </svg>
-
-                    <div id="pB-grid" class="w-full h-full grid grid-cols-8 grid-rows-8 gap-0.5 relative z-10">
-                        <!-- Grid cells injected dynamically -->
-                    </div>
-                </div>
-
-                <!-- Player B Quiz Overlay -->
-                <div id="pB-quizModal" class="hidden absolute -inset-1 bg-sea-900/95 backdrop-blur-md z-30 p-1.5 sm:p-2 rounded-xl flex flex-col justify-start gap-1 sm:gap-1.5 border-2 border-yellow-400/80 animate-tile-pop overflow-y-auto">
-                    <div class="flex items-center justify-between bg-sea-800 p-1 rounded-md border border-sea-400/30 flex-shrink-0">
-                        <span class="font-fredoka text-yellow-300 font-bold text-[11px] sm:text-xs">
-                            <i class="fa-solid fa-circle-question mr-1"></i> SOAL PEMAIN B
-                        </span>
-                        <div class="flex items-center gap-1 bg-red-900/80 px-1.5 py-0.5 rounded-md border border-red-400/50">
-                            <i class="fa-solid fa-clock text-red-300 text-[10px] sm:text-xs"></i>
-                            <span id="pB-timer" class="font-fredoka font-bold text-red-200 text-[10px] sm:text-xs">25s</span>
-                        </div>
-                    </div>
-
-                    <div class="bg-sea-950/90 p-1.5 rounded-lg border border-sea-300/20 text-[10px] sm:text-xs font-semibold leading-tight text-sea-100 max-h-[50px] sm:max-h-[60px] overflow-y-auto flex-shrink-0" id="pB-qText">
-                        Soal PJOK akan muncul di sini...
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-1 my-auto" id="pB-qOptions">
-                        <!-- Options generated dynamically -->
-                    </div>
-
-                    <div id="pB-feedback" class="hidden text-center text-[10px] sm:text-xs font-bold p-1 rounded-md flex-shrink-0"></div>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-    <!-- MODALS SECTION -->
-    
-    <!-- MODAL: CONFIRM EXIT -->
-    <div id="confirmExitModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="glass-panel max-w-xs w-full rounded-2xl p-4 text-center space-y-3 border border-red-400/50 shadow-2xl">
-            <div class="w-10 h-10 mx-auto rounded-full bg-red-500/20 text-red-400 flex items-center justify-center text-xl">
-                <i class="fa-solid fa-triangle-exclamation"></i>
-            </div>
-            <h3 class="font-fredoka text-lg font-bold text-yellow-300">Menu Utama?</h3>
-            <p class="text-xs text-sea-100">Permainan berlangsung. Kemajuan saat ini akan hilang!</p>
-            <div class="flex gap-2 pt-1">
-                <button onclick="closeConfirmExitModal()" class="flex-1 py-2 bg-sea-700 hover:bg-sea-600 font-fredoka font-bold text-xs text-sea-200 rounded-xl">
+            <div class="flex gap-3">
+                <button onclick="closePlayerSetup()" class="w-1/3 py-3 rounded-xl glass-panel text-slate-300 font-bold hover:bg-slate-800 transition">
                     Batal
                 </button>
-                <button onclick="confirmExitAction()" class="flex-1 py-2 bg-red-600 hover:bg-red-500 font-fredoka font-bold text-xs text-white rounded-xl">
-                    Ya, Keluar
+                <button onclick="startGame()" class="w-2/3 py-3 rounded-xl btn-futuristic text-white font-bold tracking-wider text-base">
+                    MULAI PERTANDINGAN <i class="fa-solid fa-play ml-1"></i>
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL: CARA BERMAIN -->
-    <div id="howToPlayModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-3">
-        <div class="glass-panel max-w-lg w-full rounded-2xl p-4 sm:p-5 border-2 border-sea-300/40 shadow-2xl space-y-3 max-h-[90vh] overflow-y-auto">
-            <div class="flex items-center justify-between border-b border-sea-400/30 pb-2">
-                <h3 class="font-fredoka text-lg sm:text-xl font-bold text-yellow-300 flex items-center gap-2">
-                    <i class="fa-solid fa-book-open text-sea-300"></i> Panduan Mahjong Connect
-                </h3>
-                <button onclick="closeHowToPlay()" class="w-7 h-7 rounded-full bg-sea-800 hover:bg-sea-700 text-sea-200 flex items-center justify-center text-xs">
+    <!-- GAME ARENA DUAL BOARD -->
+    <main id="game-arena" class="flex-1 max-w-7xl w-full mx-auto p-2 sm:p-4 grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6 my-auto items-start">
+
+        <!-- ================= PLAYER 1 BOARD (LEFT) ================= -->
+        <section class="glass-panel rounded-3xl p-3 sm:p-4 relative flex flex-col border-2 border-cyan-500/50 shadow-2xl overflow-hidden min-h-[560px]">
+            <!-- Player 1 Header Bar -->
+            <div class="flex items-center justify-between pb-3 border-b border-cyan-500/30 mb-3 bg-cyan-950/50 p-2.5 rounded-2xl">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-cyan-500/30 border border-cyan-400 flex items-center justify-center text-cyan-300 font-bold text-sm">
+                        P1
+                    </div>
+                    <div>
+                        <h2 id="p1-display-name" class="font-outfit font-black text-cyan-300 text-sm sm:text-base leading-tight">Tim Garuda</h2>
+                        <div id="p1-hp-container" class="flex items-center text-red-500 text-xs mt-0.5 space-x-0.5">
+                            <!-- Hearts injected by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <!-- Streak -->
+                    <div class="text-center px-2 py-1 bg-amber-500/20 border border-amber-400/40 rounded-lg">
+                        <span class="text-[10px] text-amber-300 block font-bold">STREAK</span>
+                        <span id="p1-streak-count" class="font-outfit font-extrabold text-amber-300 text-xs">0/5 🔥</span>
+                    </div>
+                    <!-- Score -->
+                    <div class="text-right px-3 py-1 bg-cyan-500/20 border border-cyan-400/40 rounded-xl">
+                        <span class="text-[10px] text-cyan-300 block font-bold">SKOR P1</span>
+                        <span id="p1-score-display" class="font-outfit font-black text-cyan-300 text-lg sm:text-xl">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mahjong Board Grid Player 1 -->
+            <div class="relative flex-1 flex items-center justify-center p-2">
+                <!-- SVG Canvas for Connecting Path Laser -->
+                <svg id="p1-svg-canvas" class="absolute inset-0 w-full h-full pointer-events-none z-30"></svg>
+                
+                <div id="p1-grid" class="grid grid-cols-6 gap-1.5 sm:gap-2 w-full max-w-md mx-auto aspect-square p-2 bg-slate-950/70 rounded-2xl border border-cyan-500/40 relative">
+                    <!-- Mahjong Tiles injected dynamically -->
+                </div>
+
+                <!-- P1 Question Overlay Modal -->
+                <div id="p1-question-modal" class="absolute inset-0 z-40 glass-panel rounded-2xl p-4 flex flex-col justify-between hidden bg-slate-950/95 border-2 border-cyan-400 shadow-2xl transition-all">
+                    <!-- Header with Timer -->
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-bold text-cyan-400 px-2.5 py-1 bg-cyan-900/60 rounded-lg border border-cyan-500/40">
+                                📝 SOAL PJOK SD
+                            </span>
+                            <div class="flex items-center gap-1.5 font-outfit font-black text-amber-400 text-sm">
+                                <i class="fa-solid fa-stopwatch"></i>
+                                <span id="p1-timer-text">25s</span>
+                            </div>
+                        </div>
+
+                        <!-- Timer Bar -->
+                        <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden mb-3">
+                            <div id="p1-timer-bar" class="bg-gradient-to-r from-amber-400 to-red-500 h-full w-full transition-all duration-1000 linear"></div>
+                        </div>
+
+                        <!-- Question Text -->
+                        <h3 id="p1-question-text" class="text-xs sm:text-sm font-semibold text-slate-100 leading-relaxed mb-3 min-h-[48px] flex items-center">
+                            Loading Soal...
+                        </h3>
+                    </div>
+
+                    <!-- Options A-D -->
+                    <div id="p1-options-container" class="grid grid-cols-1 gap-2 my-auto">
+                        <!-- Options generated by JS -->
+                    </div>
+
+                    <!-- Feedback banner -->
+                    <div id="p1-feedback-banner" class="text-center py-2 font-bold text-xs rounded-xl hidden"></div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================= PLAYER 2 BOARD (RIGHT) ================= -->
+        <section class="glass-panel-p2 rounded-3xl p-3 sm:p-4 relative flex flex-col border-2 border-fuchsia-500/50 shadow-2xl overflow-hidden min-h-[560px]">
+            <!-- Player 2 Header Bar -->
+            <div class="flex items-center justify-between pb-3 border-b border-fuchsia-500/30 mb-3 bg-fuchsia-950/50 p-2.5 rounded-2xl">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-fuchsia-500/30 border border-fuchsia-400 flex items-center justify-center text-fuchsia-300 font-bold text-sm">
+                        P2
+                    </div>
+                    <div>
+                        <h2 id="p2-display-name" class="font-outfit font-black text-fuchsia-300 text-sm sm:text-base leading-tight">Tim Rajawali</h2>
+                        <div id="p2-hp-container" class="flex items-center text-red-500 text-xs mt-0.5 space-x-0.5">
+                            <!-- Hearts injected by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <!-- Streak -->
+                    <div class="text-center px-2 py-1 bg-amber-500/20 border border-amber-400/40 rounded-lg">
+                        <span class="text-[10px] text-amber-300 block font-bold">STREAK</span>
+                        <span id="p2-streak-count" class="font-outfit font-extrabold text-amber-300 text-xs">0/5 🔥</span>
+                    </div>
+                    <!-- Score -->
+                    <div class="text-right px-3 py-1 bg-fuchsia-500/20 border border-fuchsia-400/40 rounded-xl">
+                        <span class="text-[10px] text-fuchsia-300 block font-bold">SKOR P2</span>
+                        <span id="p2-score-display" class="font-outfit font-black text-fuchsia-300 text-lg sm:text-xl">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mahjong Board Grid Player 2 -->
+            <div class="relative flex-1 flex items-center justify-center p-2">
+                <!-- SVG Canvas for Connecting Path Laser -->
+                <svg id="p2-svg-canvas" class="absolute inset-0 w-full h-full pointer-events-none z-30"></svg>
+                
+                <div id="p2-grid" class="grid grid-cols-6 gap-1.5 sm:gap-2 w-full max-w-md mx-auto aspect-square p-2 bg-slate-950/70 rounded-2xl border border-fuchsia-500/40 relative">
+                    <!-- Mahjong Tiles injected dynamically -->
+                </div>
+
+                <!-- P2 Question Overlay Modal -->
+                <div id="p2-question-modal" class="absolute inset-0 z-40 glass-panel-p2 rounded-2xl p-4 flex flex-col justify-between hidden bg-slate-950/95 border-2 border-fuchsia-400 shadow-2xl transition-all">
+                    <!-- Header with Timer -->
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-bold text-fuchsia-400 px-2.5 py-1 bg-fuchsia-900/60 rounded-lg border border-fuchsia-500/40">
+                                📝 SOAL PJOK SD
+                            </span>
+                            <div class="flex items-center gap-1.5 font-outfit font-black text-amber-400 text-sm">
+                                <i class="fa-solid fa-stopwatch"></i>
+                                <span id="p2-timer-text">25s</span>
+                            </div>
+                        </div>
+
+                        <!-- Timer Bar -->
+                        <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden mb-3">
+                            <div id="p2-timer-bar" class="bg-gradient-to-r from-amber-400 to-red-500 h-full w-full transition-all duration-1000 linear"></div>
+                        </div>
+
+                        <!-- Question Text -->
+                        <h3 id="p2-question-text" class="text-xs sm:text-sm font-semibold text-slate-100 leading-relaxed mb-3 min-h-[48px] flex items-center">
+                            Loading Soal...
+                        </h3>
+                    </div>
+
+                    <!-- Options A-D -->
+                    <div id="p2-options-container" class="grid grid-cols-1 gap-2 my-auto">
+                        <!-- Options generated by JS -->
+                    </div>
+
+                    <!-- Feedback banner -->
+                    <div id="p2-feedback-banner" class="text-center py-2 font-bold text-xs rounded-xl hidden"></div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- PAUSE MODAL -->
+    <div id="pause-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden">
+        <div class="max-w-md w-full glass-panel rounded-3xl p-6 sm:p-8 text-center border-2 border-fuchsia-400/60 relative shadow-2xl animate-pulse-glow">
+            <div class="w-20 h-20 rounded-full bg-fuchsia-500/20 border-2 border-fuchsia-400 mx-auto flex items-center justify-center text-4xl mb-4 text-fuchsia-300">
+                <i class="fa-solid fa-pause"></i>
+            </div>
+
+            <h2 class="text-2xl font-outfit font-black text-fuchsia-300 mb-2">PERMAINAN DIJEDA</h2>
+            <p class="text-xs text-slate-300 mb-6">Waktu dan papan ubin dihentikan sementara.</p>
+
+            <div class="space-y-3">
+                <button onclick="togglePauseGame()" class="w-full py-3.5 rounded-xl btn-futuristic text-white font-bold text-sm flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-play"></i> LANJUTKAN PERMAINAN
+                </button>
+                <button onclick="restartGame()" class="w-full py-3 rounded-xl glass-panel text-amber-300 font-bold text-sm border border-amber-400/40 hover:bg-amber-500/20 transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-rotate-right"></i> REPLAY / MAIN ULANG
+                </button>
+                <button onclick="showMainMenu()" class="w-full py-3 rounded-xl glass-panel text-slate-300 font-bold text-sm border border-slate-500/40 hover:bg-slate-800 transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-house"></i> KEMBALI KE MAIN MENU
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER INFO BAR -->
+    <footer class="w-full z-30 py-2.5 px-4 glass-panel border-t border-cyan-500/30 text-center text-xs text-cyan-200/90 flex flex-col sm:flex-row items-center justify-between gap-2 font-medium">
+        <div>
+            <span>© 2026 Mahjong Match-3 Duel PJOK SD</span> | 
+            <span class="text-amber-300 font-bold">Guru PJOK SD Tuban, Jawa Timur</span>
+        </div>
+        <div class="flex items-center gap-4">
+            <a href="https://instagram.com/pak.arpjok" target="_blank" class="hover:text-cyan-300 flex items-center gap-1 font-bold">
+                <i class="fa-brands fa-instagram text-pink-400"></i> @pak.arpjok
+            </a>
+            <a href="https://tiktok.com/@pak.arpjok" target="_blank" class="hover:text-cyan-300 flex items-center gap-1 font-bold">
+                <i class="fa-brands fa-tiktok text-cyan-400"></i> @pak.arpjok
+            </a>
+        </div>
+    </footer>
+
+    <!-- MODAL: HOW TO PLAY -->
+    <div id="modal-how-to-play" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden">
+        <div class="max-w-xl w-full glass-panel rounded-3xl p-6 border border-cyan-400/50 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b border-cyan-500/30 pb-3 mb-4">
+                <h2 class="text-xl font-outfit font-black text-cyan-300 flex items-center gap-2">
+                    <i class="fa-solid fa-gamepad text-amber-400"></i> ATURAN & CARA BERMAIN
+                </h2>
+                <button onclick="closeModal('modal-how-to-play')" class="text-slate-400 hover:text-white text-xl">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
 
-            <div class="space-y-2.5 text-xs sm:text-sm leading-relaxed text-sea-100">
-                <div class="bg-sea-800/80 p-2.5 rounded-xl border border-sea-400/20 flex gap-2.5 items-start">
-                    <div class="w-6 h-6 rounded-lg bg-blue-500 text-white font-fredoka font-bold flex items-center justify-center text-xs flex-shrink-0">1</div>
+            <div class="space-y-4 text-xs sm:text-sm text-slate-200 leading-relaxed">
+                <div class="p-3 bg-cyan-950/70 rounded-xl border border-cyan-500/40 flex gap-3 items-start">
+                    <span class="text-2xl">🀄</span>
                     <div>
-                        <strong class="text-yellow-300 block mb-0.5">Connect 2 Ubin Kembar (Onet):</strong>
-                        Sentuh <strong class="text-white">2 ubin berikon sama</strong> yang dapat dihubungkan garis (maksimal <strong class="text-yellow-300">2 belokan / 3 segmen</strong>).
+                        <strong class="text-cyan-300 block text-sm mb-1">1. Mencocokkan Ubin (Match-3 Line Path)</strong>
+                        Pilih 2 ubin ber-emoticon sama yang terletak berdampingan atau terhubung jalur garis siku (maksimal 2 kali belokan tanpa terhalang ubin lain).
                     </div>
                 </div>
 
-                <div class="bg-sea-800/80 p-2.5 rounded-xl border border-sea-400/20 flex gap-2.5 items-start">
-                    <div class="w-6 h-6 rounded-lg bg-emerald-500 text-white font-fredoka font-bold flex items-center justify-center text-xs flex-shrink-0">2</div>
+                <div class="p-3 bg-cyan-950/70 rounded-xl border border-cyan-500/40 flex gap-3 items-start">
+                    <span class="text-2xl">📝</span>
                     <div>
-                        <strong class="text-yellow-300 block mb-0.5">Soal Kuis PJOK:</strong>
-                        Setiap match berhasil, Pop-up Kuis muncul untuk pemain tersebut tanpa menghentikan lawan.
+                        <strong class="text-cyan-300 block text-sm mb-1">2. Pemicu Soal PJOK (Trigger Question)</strong>
+                        Setiap pasangan ubin yang cocok akan memunculkan Pop-up Soal secara independen di papan masing-masing pemain tanpa menghentikan lawan.
                     </div>
                 </div>
 
-                <div class="bg-sea-800/80 p-2.5 rounded-xl border border-sea-400/20 flex gap-2.5 items-start">
-                    <div class="w-6 h-6 rounded-lg bg-amber-500 text-white font-fredoka font-bold flex items-center justify-center text-xs flex-shrink-0">3</div>
+                <div class="p-3 bg-cyan-950/70 rounded-xl border border-cyan-500/40 flex gap-3 items-start">
+                    <span class="text-2xl">⏱️</span>
                     <div>
-                        <strong class="text-yellow-300 block mb-0.5">Aturan Skor & HP:</strong>
-                        <ul class="list-disc list-inside mt-0.5 space-y-0.5 text-sea-200">
-                            <li>Waktu menjawab <strong class="text-yellow-300">25 Detik</strong>.</li>
-                            <li><strong class="text-green-300">Benar:</strong> +10 Poin. | <strong class="text-red-300">Salah/Habis Waktu:</strong> -10 Poin & HP -1.</li>
-                            <li><strong class="text-yellow-300">Streak 5x Benar:</strong> Bonus +1 HP!</li>
+                        <strong class="text-cyan-300 block text-sm mb-1">3. Aturan Skor, HP & Timer</strong>
+                        <ul class="list-disc pl-4 space-y-1 mt-1 text-slate-300">
+                            <li>Waktu menjawab per soal: <strong>25 Detik</strong>.</li>
+                            <li>Jawaban Benar: <strong class="text-emerald-400">+10 Poin</strong>.</li>
+                            <li>Jawaban Salah / Kehabisan Waktu: <strong class="text-rose-400">-10 Poin</strong> & <strong class="text-rose-400">HP -1</strong>.</li>
+                            <li><strong>Bonus HP (+1 HP)</strong>: Diperoleh setiap berhasil menjawab <strong>5 soal benar berturut-turut</strong> (Streak 5).</li>
                         </ul>
                     </div>
                 </div>
-            </div>
 
-            <div class="text-center pt-1">
-                <button onclick="closeHowToPlay()" class="px-5 py-2 bg-sea-500 hover:bg-sea-400 font-fredoka font-bold text-xs text-white rounded-xl shadow-lg">
-                    Saya Mengerti!
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL: TENTANG PENGEMBANG -->
-    <div id="aboutModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="glass-panel max-w-sm w-full rounded-2xl p-5 border-2 border-sea-300/40 shadow-2xl space-y-4 text-center">
-            <div class="w-16 h-16 mx-auto rounded-full bg-gradient-to-tr from-yellow-400 to-amber-600 p-1 shadow-xl">
-                <div class="w-full h-full rounded-full bg-sea-900 flex items-center justify-center text-yellow-300 text-xl font-bold font-fredoka">
-                    PJOK
-                </div>
-            </div>
-
-            <div class="space-y-1">
-                <h3 class="font-fredoka text-xl font-bold text-yellow-300">
-                    Mahjong Connect Duel PJOK
-                </h3>
-                <p class="text-xs text-sea-200">
-                    Media Pembelajaran Edukasi Interaktif Berbasis Gamifikasi
-                </p>
-            </div>
-
-            <div class="bg-sea-900/80 p-3 rounded-xl border border-sea-400/20 text-left space-y-2 text-xs">
-                <div>
-                    <span class="text-sea-300 font-semibold block">Pengembang:</span>
-                    <strong class="text-white font-fredoka">Guru PJOK SD asal Tuban, Jawa Timur</strong>
-                </div>
-                <hr class="border-sea-700">
-                <div>
-                    <span class="text-sea-300 font-semibold block mb-1">Media Sosial Resmi:</span>
-                    <div class="flex items-center gap-2">
-                        <a href="https://instagram.com/pak.arpjok" target="_blank" rel="noopener" class="flex items-center gap-1.5 px-2.5 py-1 bg-pink-600/30 hover:bg-pink-600/50 text-pink-200 border border-pink-500/40 rounded-lg transition-all font-bold text-[11px]">
-                            <i class="fa-brands fa-instagram"></i> @pak.arpjok
-                        </a>
-                        <a href="https://tiktok.com/@pak.arpjok" target="_blank" rel="noopener" class="flex items-center gap-1.5 px-2.5 py-1 bg-cyan-600/30 hover:bg-cyan-600/50 text-cyan-200 border border-cyan-500/40 rounded-lg transition-all font-bold text-[11px]">
-                            <i class="fa-brands fa-tiktok"></i> @pak.arpjok
-                        </a>
+                <div class="p-3 bg-cyan-950/70 rounded-xl border border-cyan-500/40 flex gap-3 items-start">
+                    <span class="text-2xl">🏆</span>
+                    <div>
+                        <strong class="text-cyan-300 block text-sm mb-1">4. Kondisi Kalah & Menang</strong>
+                        Pemain kalah jika HP habis (0) atau slot ubin habis. Pemain dengan skor tertinggi dan bertahan memenangkan pertandingan!
                     </div>
                 </div>
             </div>
 
-            <button onclick="closeAbout()" class="w-full py-2 bg-sea-500 hover:bg-sea-400 text-white font-fredoka font-bold text-xs rounded-xl shadow-md">
-                Tutup
+            <button onclick="closeModal('modal-how-to-play')" class="w-full mt-6 py-3 rounded-xl btn-futuristic text-white font-bold text-sm">
+                SAYA MENGERTI
             </button>
         </div>
     </div>
 
-    <!-- MODAL: RESULT / GAME OVER -->
-    <div id="resultModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
-        <div class="glass-panel max-w-sm w-full rounded-2xl p-5 border-2 border-yellow-400/60 shadow-2xl text-center space-y-4 animate-tile-pop">
-            <div id="resultIcon" class="text-5xl animate-bounce">ߏ</div>
+    <!-- MODAL: ABOUT DEVELOPER -->
+    <div id="modal-about" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden">
+        <div class="max-w-md w-full glass-panel rounded-3xl p-6 border border-cyan-400/50 text-center relative overflow-hidden">
+            <button onclick="closeModal('modal-about')" class="absolute top-4 right-4 text-slate-400 hover:text-white text-xl">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
 
-            <div class="space-y-0.5">
-                <h2 id="resultTitle" class="font-fredoka text-2xl font-bold text-yellow-300">
-                    PEMAIN A MENANG!
-                </h2>
-                <p id="resultReason" class="text-xs text-sea-200">
-                    Pemain A berhasil membersihkan seluruh ubin papan!
+            <div class="w-20 h-20 rounded-2xl bg-gradient-to-tr from-cyan-400 to-blue-600 mx-auto mb-4 flex items-center justify-center text-4xl shadow-xl shadow-cyan-500/30 border-2 border-cyan-300">
+                👨‍🏫
+            </div>
+
+            <h2 class="text-xl font-outfit font-black text-cyan-300 mb-1">TENTANG PENGEMBANG</h2>
+            <p class="text-xs text-amber-300 font-bold mb-4">Guru PJOK SD - Tuban, Jawa Timur</p>
+
+            <div class="text-xs text-slate-200 leading-relaxed space-y-3 bg-slate-950/70 p-4 rounded-2xl border border-cyan-500/30 mb-6 text-left">
+                <p>
+                    Game <strong>Mahjong Match-3 Duel PJOK SD</strong> dikembangkan khusus sebagai media pembelajaran interaktif berbasis gamifikasi edukasi jasmani untuk siswa Sekolah Dasar.
+                </p>
+                <p>
+                    Menggabungkan ketangkasan logika Match-3 dengan penguatan literasi materi PJOK (Gerak Dasar, Permainan Bola, Kebugaran, Aktivitas Air, hingga Pola Hidup Sehat).
                 </p>
             </div>
 
-            <div class="grid grid-cols-2 gap-2 text-left text-xs">
-                <div class="bg-blue-950/80 p-2.5 rounded-xl border border-blue-400/40">
-                    <div class="font-fredoka font-bold text-blue-300 mb-0.5">PEMAIN A</div>
-                    <div class="text-sea-200">Poin: <strong id="resA-score" class="text-yellow-300">0</strong></div>
-                    <div class="text-sea-200">Sisa HP: <strong id="resA-hp" class="text-red-400">0</strong></div>
-                    <div class="text-sea-200">Streak Maks: <strong id="resA-streak" class="text-orange-400">0</strong></div>
+            <!-- Social Media Cards -->
+            <div class="grid grid-cols-2 gap-3 mb-6">
+                <a href="https://instagram.com/pak.arpjok" target="_blank" class="p-3 bg-gradient-to-br from-pink-600/30 to-purple-600/30 rounded-xl border border-pink-400/40 hover:scale-105 transition flex items-center justify-center gap-2 text-xs font-bold text-pink-200">
+                    <i class="fa-brands fa-instagram text-lg text-pink-400"></i> Instagram
+                </a>
+                <a href="https://tiktok.com/@pak.arpjok" target="_blank" class="p-3 bg-gradient-to-br from-cyan-600/30 to-slate-800/50 rounded-xl border border-cyan-400/40 hover:scale-105 transition flex items-center justify-center gap-2 text-xs font-bold text-cyan-200">
+                    <i class="fa-brands fa-tiktok text-lg text-cyan-400"></i> TikTok
+                </a>
+            </div>
+
+            <button onclick="closeModal('modal-about')" class="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs">
+                Tutup Modal
+            </button>
+        </div>
+    </div>
+
+    <!-- GAME OVER / VICTORY MODAL -->
+    <div id="game-over-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md hidden">
+        <div class="max-w-lg w-full glass-panel rounded-3xl p-6 sm:p-8 text-center border-2 border-amber-400/60 relative shadow-2xl animate-pulse-glow">
+            <div class="w-24 h-24 rounded-full bg-amber-500/20 border-2 border-amber-400 mx-auto flex items-center justify-center text-5xl mb-4 shadow-xl shadow-amber-500/30">
+                🏆
+            </div>
+
+            <h2 id="winner-title" class="text-2xl sm:text-3xl font-outfit font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-400 mb-2">
+                TIM GARUDA MENANG!
+            </h2>
+            <p id="winner-subtitle" class="text-xs sm:text-sm text-cyan-200 mb-6">Pertandingan luar biasa dengan performa terbaik!</p>
+
+            <!-- Score Summary comparison -->
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="p-3.5 bg-cyan-950/80 rounded-2xl border border-cyan-500/40">
+                    <span id="p1-summary-name" class="text-xs font-bold text-cyan-300 block mb-1">P1 Tim Garuda</span>
+                    <span id="p1-summary-score" class="text-xl font-black text-white">120 Pts</span>
                 </div>
-                <div class="bg-emerald-950/80 p-2.5 rounded-xl border border-emerald-400/40">
-                    <div class="font-fredoka font-bold text-emerald-300 mb-0.5">PEMAIN B</div>
-                    <div class="text-sea-200">Poin: <strong id="resB-score" class="text-yellow-300">0</strong></div>
-                    <div class="text-sea-200">Sisa HP: <strong id="resB-hp" class="text-red-400">0</strong></div>
-                    <div class="text-sea-200">Streak Maks: <strong id="resB-streak" class="text-orange-400">0</strong></div>
+                <div class="p-3.5 bg-fuchsia-950/80 rounded-2xl border border-fuchsia-500/40">
+                    <span id="p2-summary-name" class="text-xs font-bold text-fuchsia-300 block mb-1">P2 Tim Rajawali</span>
+                    <span id="p2-summary-score" class="text-xl font-black text-white">80 Pts</span>
                 </div>
             </div>
 
-            <div class="flex gap-2 pt-1">
-                <button onclick="restartGame()" class="flex-1 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-fredoka font-bold text-xs rounded-xl shadow-lg border border-emerald-300">
-                    <i class="fa-solid fa-rotate-right mr-1"></i> Main Lagi
+            <div class="flex gap-3">
+                <button onclick="showMainMenu()" class="w-1/2 py-3 rounded-xl glass-panel text-slate-300 font-bold hover:bg-slate-800 transition text-sm">
+                    <i class="fa-solid fa-house mr-1"></i> Main Menu
                 </button>
-                <button onclick="exitToHome()" class="px-4 py-2.5 bg-sea-700 hover:bg-sea-600 text-sea-200 font-fredoka font-bold text-xs rounded-xl">
-                    <i class="fa-solid fa-house"></i>
+                <button onclick="restartGame()" class="w-1/2 py-3 rounded-xl btn-futuristic text-white font-bold tracking-wider text-sm">
+                    <i class="fa-solid fa-rotate-right mr-1"></i> Rematch / Replay
                 </button>
             </div>
         </div>
     </div>
 
+    <!-- JAVASCRIPT LOGIC ENGINE -->
     <script>
+        // 50 ITEM PJOK SD QUESTION BANK
         const BANK_SOAL_PJOK = [
-            // Gerak Dasar
-            { id: 1, soal: "Gerakan berpindah tempat dari satu titik ke titik lain disebut gerak...", pilihan: ["Nonlokomotor", "Lokomotor", "Manipulatif", "Irama"], jawaban: 1 },
-            { id: 2, soal: "Contoh gerakan nonlokomotor di bawah ini yang benar adalah...", pilihan: ["Berlari cepat", "Melompat tinggi", "Membungkukkan badan", "Menendang bola"], jawaban: 2 },
-            { id: 3, soal: "Gerakan menggunakan alat seperti melempar dan menangkap bola disebut gerak...", pilihan: ["Lokomotor", "Nonlokomotor", "Manipulatif", "Keseimbangan"], jawaban: 2 },
-            { id: 4, soal: "Saat berjalan tegak, pandangan mata harus lurus ke arah...", pilihan: ["Bawah/Lantai", "Samping kanan", "Depan", "Atas/Langit"], jawaban: 2 },
-            { id: 5, soal: "Aktivitas melompat dengan satu kaki tumpuan bertujuan melatih kekuatan otot...", pilihan: ["Tangan", "Kaki", "Perut", "Leher"], jawaban: 1 },
-
-            // Permainan Bola Besar
-            { id: 6, soal: "Dalam permainan sepak bola, bagian tubuh yang TIDAK boleh menyentuh bola bagi pemain lapangan adalah...", pilihan: ["Kaki", "Kepala", "Dada", "Tangan"], jawaban: 3 },
-            { id: 7, soal: "Pemain sepak bola yang bertugas khusus menjaga gawang agar tidak kemasukan bola disebut...", pilihan: ["Striker", "Kiper / Penjaga Gawang", "Bek", "Gelandang"], jawaban: 1 },
-            { id: 8, soal: "Gerakan memantulkan bola basket ke lantai sambil berjalan atau berlari disebut...", pilihan: ["Passing", "Dribbling / Menggiring", "Shooting", "Pivot"], jawaban: 1 },
-            { id: 9, soal: "Teknik mengoper bola voli menggunakan kedua lengan bawah yang dirapatkan disebut...", pilihan: ["Servis atas", "Passing bawah", "Smash", "Block"], jawaban: 1 },
-            { id: 10, soal: "Berapa jumlah pemain dalam satu tim sepak bola di lapangan?", pilihan: ["5 orang", "6 orang", "11 orang", "12 orang"], jawaban: 2 },
-            { id: 11, soal: "Pukulan keras dan tajam menukik ke lapangan lawan dalam permainan bola voli disebut...", pilihan: ["Smash", "Passing", "Servis", "Lob"], jawaban: 0 },
-
-            // Permainan Bola Kecil
-            { id: 12, soal: "Alat yang digunakan untuk memukul bola dalam permainan bulu tangkis adalah...", pilihan: ["Bet", "Raket", "Tongkat Wood", "Stik"], jawaban: 1 },
-            { id: 13, soal: "Bola yang digunakan dalam permainan bulu tangkis dinamakan...", pilihan: ["Bola kasti", "Shuttlecock / Kok", "Bola pingpong", "Bola tenis"], jawaban: 1 },
-            { id: 14, soal: "Permainan kasti merupakan salah satu contoh permainan...", pilihan: ["Bola Besar", "Bola Kecil", "Atletik", "Senam Lantai"], jawaban: 1 },
-            { id: 15, soal: "Alat pemukul dalam permainan tenis meja dinamakan...", pilihan: ["Raket", "Bet", "Stick", "Paddle"], jawaban: 1 },
-            { id: 16, soal: "Jumlah tiang hinggap dalam lapangan permainan kasti adalah...", pilihan: ["1 tiang", "2 tiang", "3 tiang", "4 tiang"], jawaban: 1 },
-
-            // Atletik
-            { id: 17, soal: "Induk organisasi cabang olahraga atletik di Indonesia adalah...", pilihan: ["PSSI", "PBVSI", "PASI", "PERBASI"], jawaban: 2 },
-            { id: 18, soal: "Posisi badan saat melakukan lari cepat (sprint) sebaiknya condong ke...", pilihan: ["Depan", "Belakang", "Samping", "Tegak lurus"], jawaban: 0 },
-            { id: 19, soal: "Abaikan rasa lelah, saat mendekati garis finish lari sprint kita harus...", pilihan: ["Melambat", "Menambah kecepatan", "Berhenti mendadak", "Melompat balik"], jawaban: 1 },
-            { id: 20, soal: "Lari bersambung yang menggunakan tongkat sebagai estafet disebut...", pilihan: ["Lari maraton", "Lari estafet", "Lari jarak jauh", "Lari gawang"], jawaban: 1 },
-            { id: 21, soal: "Tahapan dalam lompat jauh meliputi awalan, tolakan, melayang, dan...", pilihan: ["Mendarat", "Berguling", "Berdiri", "Meluncur"], jawaban: 0 },
-
-            // Senam
-            { id: 22, soal: "Gerakan berguling ke depan di atas matras disebut...", pilihan: ["Back roll", "Forward roll / Guling depan", "Sikap lilin", "Kayang"], jawaban: 1 },
-            { id: 23, soal: "Matras digunakan pada senam lantai bertujuan untuk...", pilihan: ["Hiasan lapangan", "Mencegah cedera / Keamanan", "Membuat licin", "Mempercepat gerakan"], jawaban: 1 },
-            { id: 24, soal: "Gerakan mengangkat kedua kaki lurus ke atas dengan tumpuan pundak disebut...", pilihan: ["Kayang", "Sikap lilin", "Meroda", "Split"], jawaban: 1 },
-            { id: 25, soal: "Senam yang diiringi musik, irama, atau ketukan lagu dinamakan...", pilihan: ["Senam lantai", "Senam ritmik / irama", "Senam ketangkasan", "Senam alat"], jawaban: 1 },
-            { id: 26, soal: "Unsur paling penting dalam melakukan gerakan senam irama adalah...", pilihan: ["Kekuatan otot saja", "Keserasian irama & gerakan", "Kecepatan tinggi", "Kelengkapan alat"], jawaban: 1 },
-
-            // Kebugaran Jasmani
-            { id: 27, soal: "Latihan push-up sangat berguna untuk melatih kekuatan otot...", pilihan: ["Perut", "Dada dan lengan", "Paha dan Kaki", "Punggung"], jawaban: 1 },
-            { id: 28, soal: "Untuk melatih kekuatan otot perut, gerakan latihan yang cocok adalah...", pilihan: ["Sit-up", "Push-up", "Pull-up", "Squat-jump"], jawaban: 0 },
-            { id: 29, soal: "Kemampuan tubuh bergerak meliuk tanpa merasa sakit pada sendi disebut...", pilihan: ["Kecepatan", "Kelenturan / Kelentukan", "Kekuatan", "Kelincahan"], jawaban: 1 },
-            { id: 30, soal: "Latihan lari bolak-balik (shuttle run) bertujuan melatih...", pilihan: ["Kelincahan", "Daya tahan jantung", "Kelenturan leher", "Keseimbangan"], jawaban: 0 },
-            { id: 31, soal: "Berdiri satu kaki dengan kedua tangan direntangkan melatih...", pilihan: ["Keseimbangan", "Kecepatan", "Daya tahan", "Power"], jawaban: 0 },
-
-            // Aktivitas Air
-            { id: 32, soal: "Gaya renang yang menyerupai gerakan katak berenang adalah gaya...", pilihan: ["Bebas", "Dada", "Punggung", "Kupu-kupu"], jawaban: 1 },
-            { id: 33, soal: "Sebelum masuk dan berenang di kolam renang, kita wajib melakukan...", pilihan: ["Makan kenyang", "Pemanasan otot", "Tidur sebentar", "Lari maraton"], jawaban: 1 },
-            { id: 34, soal: "Alat bantu keselamatan yang digunakan belajar mengapung di air adalah...", pilihan: ["Kacamata renang", "Pelampung", "Topi renang", "Baju renang"], jawaban: 1 },
-            { id: 35, soal: "Mengambil napas saat berenang gaya dada dilakukan ketika kepala...", pilihan: ["Masuk ke dalam air", "Muncul di atas permukaan air", "Melihat ke dasar", "Menengok ke belakang"], jawaban: 1 },
-
-            // Pola Hidup Sehat
-            { id: 36, soal: "Makanan sehat gizi seimbang mengandung karbohidrat, protein, lemak, vitamin, dan...", pilihan: ["Pemanis buatan", "Pengawet", "Mineral", "Pewarna kimia"], jawaban: 2 },
-            { id: 37, soal: "Zat gizi yang berfungsi sebagai sumber energi utama bagi tubuh adalah...", pilihan: ["Protein", "Karbohidrat", "Vitamin C", "Kalsium"], jawaban: 1 },
-            { id: 38, soal: "Menggosok gigi sebaiknya dilakukan minimal...", pilihan: ["1 kali seminggu", "2 kali sehari (pagi & malam)", "5 kali sehari", "Saat mandi saja"], jawaban: 1 },
-            { id: 39, soal: "Waktu istirahat terbaik untuk mengembalikan kesegaran tubuh anak SD adalah...", pilihan: ["Bermain game hp", "Tidur cukup (8-10 jam)", "Nonton TV seharian", "Begadang malam"], jawaban: 1 },
-            { id: 40, soal: "Obat pembersih kuman yang digunakan saat pertolongan pertama luka ringan adalah...", pilihan: ["Balsem", "Antiseptik / Betadine", "Minyak goreng", "Detergen"], jawaban: 1 },
-            { id: 41, soal: "Mencuci tangan sebelum makan sebaiknya menggunakan...", pilihan: ["Air bersih saja", "Sabun dan air mengalir", "Tisu kering", "Kain lap meja"], jawaban: 1 },
-            { id: 42, soal: "Bila teman terjatuh dan mengalami luka lecet, tindakan kita adalah...", pilihan: ["Mentertawakannya", "P3K / Menolongnya ke UKS", "Pura-pura tidak tahu", "Meninggalkannya"], jawaban: 1 },
-
-            // Karakter & Sikap
-            { id: 43, soal: "Menghormati keputusan wasit dan menerima kekalahan dengan lapang dada disebut sikap...", pilihan: ["Egois", "Sportif / Sportivitas", "Sombong", "Apatis"], jawaban: 1 },
-            { id: 44, soal: "Tujuan utama gerakan pemanasan sebelum berolahraga adalah...", pilihan: ["Membuat capek duluan", "Mencegah cedera otot", "Menghabiskan waktu", "Menambah beban"], jawaban: 1 },
-            { id: 45, soal: "Bekerja sama dalam tim sepak bola sangat penting untuk mencapai...", pilihan: ["Kekalahan", "Kemenangan / Keberhasilan", "Perselisihan", "Pertengkaran"], jawaban: 1 },
-            { id: 46, soal: "Jika kram otot terjadi saat berolahraga, langkah awal yang tepat adalah...", pilihan: ["Tetap dipaksa berlari", "Istirahat & peregangan perlahan", "Pukul otot kram", "Disiram air es"], jawaban: 1 },
-            { id: 47, soal: "Menjaga kebersihan lingkungan sekolah dan tempat olahraga adalah tanggung jawab...", pilihan: ["Penjaga sekolah saja", "Guru PJOK saja", "Semua warga sekolah", "Ketua kelas saja"], jawaban: 2 },
-            { id: 48, soal: "Pakaian yang paling tepat dan nyaman digunakan saat pelajaran PJOK adalah...", pilihan: ["Seragam Pramuka", "Baju Olahraga & Sepatu", "Baju Batik", "Bebas Kaos Oblong"], jawaban: 1 },
-            { id: 49, soal: "Sikap tidak curang dan mematuhi semua peraturan permainan disebut...", pilihan: ["Disiplin & Jujur", "Pemberani", "Sombong", "Egois"], jawaban: 0 },
-            { id: 50, soal: "Gerakan pendinginan setelah berolahraga berfungsi untuk...", pilihan: ["Mengembalikan denyut jantung ke normal", "Menambah kelelahan", "Meningkatkan suhu panas", "Membuat pusing"], jawaban: 0 }
+            { id: 1, soal: "Gerakan berpindah tempat dari satu titik ke titik lain seperti berjalan dan berlari disebut gerak...", pilihan: ["A. Lokomotor", "B. Nonlokomotor", "C. Manipulatif", "D. Isometrik"], jawaban: 0 },
+            { id: 2, soal: "Gerakan mengayun lengan, membungkuk, dan memutar pinggang termasuk contoh gerak...", pilihan: ["A. Lokomotor", "B. Nonlokomotor", "C. Manipulatif", "D. Otomatis"], jawaban: 1 },
+            { id: 3, soal: "Gerakan memukul bola, menendang bola, dan melempar bola memakai benda/alat disebut gerak...", pilihan: ["A. Nonlokomotor", "B. Lokomotor", "C. Manipulatif", "D. Akrobatik"], jawaban: 2 },
+            { id: 4, soal: "Jumlah pemain dalam satu tim sepak bola di lapangan saat pertandingan resmi adalah...", pilihan: ["A. 5 Orang", "B. 6 Orang", "C. 11 Orang", "D. 12 Orang"], jawaban: 2 },
+            { id: 5, soal: "Bagian tubuh yang TIDAK boleh menyentuh bola bagi pemain lapangan dalam sepak bola adalah...", pilihan: ["A. Kepala", "B. Tangan", "C. Paha", "D. Dada"], jawaban: 1 },
+            { id: 6, soal: "Pukulan awal untuk memulai permainan dalam olahraga bola voli disebut...", pilihan: ["A. Smash", "B. Passing", "C. Service", "D. Blocking"], jawaban: 2 },
+            { id: 7, soal: "Teknik mengumpan bola ke teman satu tim dengan dua tangan dari atas kepala dalam bola voli disebut...", pilihan: ["A. Passing Bawah", "B. Passing Atas", "C. Smash", "D. Pivot"], jawaban: 1 },
+            { id: 8, soal: "Memantul-mantulkan bola basket ke lantai sambil berjalan atau berlari dinamakan...", pilihan: ["A. Dribbling", "B. Shooting", "C. Passing", "D. Rebound"], jawaban: 0 },
+            { id: 9, soal: "Memasukkan bola ke keranjang lawan dalam bola basket bernilai angka jika berhasil, gerakan memutar badan dengan satu kaki tumpuan dinamakan...", pilihan: ["A. Pivot", "B. Lay up", "C. Chest pass", "D. Dunk"], jawaban: 0 },
+            { id: 10, soal: "Dalam permainan kasti, alat yang digunakan untuk memukul bola terbuat dari...", pilihan: ["A. Besi", "B. Kayu", "C. Plastik Tipis", "D. Busa"], jawaban: 1 },
+            { id: 11, soal: "Olahraga bulu tangkis dimainkan memakai alat pemukul yang disebut...", pilihan: ["A. Bet", "B. Pemukul Kayu", "C. Raket", "D. Stik"], jawaban: 2 },
+            { id: 12, soal: "Bola yang digunakan dalam permainan bulu tangkis disebut...", pilihan: ["A. Bola Pingpong", "B. Shuttlecock (Kok)", "C. Bola Kasti", "D. Bola Voli"], jawaban: 1 },
+            { id: 13, soal: "Alat pemukul dalam permainan tenis meja dinamakan...", pilihan: ["A. Bet", "B. Raket", "C. Stik", "D. Tongkat"], jawaban: 0 },
+            { id: 14, soal: "Nomor lari jarak pendek (sprint) pada cabang olahraga atletik mengutamakan...", pilihan: ["A. Kelenturan", "B. Kecepatan maksimal", "C. Daya tahan tinggi", "D. Keseimbangan"], jawaban: 1 },
+            { id: 15, soal: "Abaikan rasa ragu, sikap saat melakukan start berdiri biasanya digunakan pada lari jarak...", pilihan: ["A. Pendek (Sprint)", "B. Menengah & Jarak Jauh", "C. Estafet 100m", "D. Gawang 100m"], jawaban: 1 },
+            { id: 16, soal: "Posisi awal tubuh saat melakukan gerakan guling ke depan (forward roll) pada senam lantai adalah...", pilihan: ["A. Berdiri/Jongkok menghadap matras", "B. Tidur terlentang", "C. Tidur telungkup", "D. Miring ke kiri"], jawaban: 0 },
+            { id: 17, soal: "Matras pada senam lantai berfungsi utama untuk...", pilihan: ["A. Tempat tidur", "B. Keamanan dan mencegah cedera", "C. Hiasan lapangan", "D. Menambah licin"], jawaban: 1 },
+            { id: 18, soal: "Senam yang diiringi oleh irama musik, ketukan, atau tepukan tangan dinamakan...", pilihan: ["A. Senam Lantai", "B. Senam Ritmik / Irama", "C. Senam Alat", "D. Senam Kebugaran Paru"], jawaban: 1 },
+            { id: 19, soal: "Kemampuan otot untuk melakukan beban kerja secara maksimal dinamakan...", pilihan: ["A. Kekuatan (Strength)", "B. Kecepatan (Speed)", "C. Kelenturan (Flexibility)", "D. Keseimbangan"], jawaban: 0 },
+            { id: 20, soal: "Latihan push-up bertujuan utama untuk melatih kekuatan otot...", pilihan: ["A. Perut dan Punggung", "B. Lengan dan Dada", "C. Paha dan Betis", "D. Leher"], jawaban: 1 },
+            { id: 21, soal: "Latihan sit-up berguna untuk melatih kekuatan otot...", pilihan: ["A. Lengan", "B. Perut", "C. Paha", "D. Leher"], jawaban: 1 },
+            { id: 22, soal: "Latihan lari bolak-balik (shuttle run) bertujuan untuk meningkatkan...", pilihan: ["A. Kelincahan (Agility)", "B. Kelenturan", "C. Keseimbangan", "D. Kekuatan jari"], jawaban: 0 },
+            { id: 23, soal: "Gaya renang dengan posisi dada menghadap ke permukaan air dan gerakan kaki menendang seperti katak adalah...", pilihan: ["A. Gaya Bebas", "B. Gaya Dada (Katak)", "C. Gaya Punggung", "D. Gaya Kupu-kupu"], jawaban: 1 },
+            { id: 24, soal: "Posisi wajah/badan saat melakukan renang gaya punggung adalah...", pilihan: ["A. Menghadap ke bawah air", "B. Menghadap ke atas / langit", "C. Menghadap ke samping kanan", "D. Menghadap ke dinding kolam"], jawaban: 1 },
+            { id: 25, soal: "Sebelum berenang di kolam renang, kita wajib melakukan...", pilihan: ["A. Makan kenyang", "B. Pemanasan (Warming up)", "C. Lari marathon", "D. Tidur siang"], jawaban: 1 },
+            { id: 26, soal: "Peralatan keselamatan yang wajib digunakan bagi pemula di kolam renang dalam adalah...", pilihan: ["A. Kacamata hitam", "B. Pelampung / Ban renang", "C. Sepatu bola", "D. Sarung tangan"], jawaban: 1 },
+            { id: 27, soal: "Makanan bergizi seimbang yang mengandung karbohidrat sebagai sumber energi utama adalah...", pilihan: ["A. Nasi, Singkong, dan Roti", "B. Ikan dan Telur", "C. Buah Jeruk", "D. Sayur Bayam"], jawaban: 0 },
+            { id: 28, soal: "Zat makanan yang berfungsi sebagai zat pembangun dan mengganti sel tubuh yang rusak adalah...", pilihan: ["A. Karbohidrat", "B. Protein", "C. Lemak", "D. Vitamin"], jawaban: 1 },
+            { id: 29, soal: "Menggosok gigi secara teratur idealnya dilakukan minimal...", pilihan: ["A. 1 Kali seminggu", "B. 2 Kali sehari (pagi & sebelum tidur)", "C. 5 Kali semalaman", "D. Hanya saat mandi sore"], jawaban: 1 },
+            { id: 30, soal: "Tidur dan istirahat yang cukup bagi anak usia sekolah dasar adalah sekitar...", pilihan: ["A. 2 - 3 Jam", "B. 8 - 9 Jam per hari", "C. 15 Jam per hari", "D. 1 Jam sehari"], jawaban: 1 },
+            { id: 31, soal: "Langkah pertama pertolongan pertama pada luka lecet ringan akibat terjatuh adalah...", pilihan: ["A. Dibiarkan kotor", "B. Dicuci air bersih dan diberi antiseptik", "C. Diikat tali kencang", "D. Diberi es batu cair"], jawaban: 1 },
+            { id: 32, soal: "Sikap saling menghargai, jujur, dan menerima kekalahan saat berolahraga disebut...", pilihan: ["A. Egois", "B. Sportivitas", "C. Sombong", "D. Pemarah"], jawaban: 1 },
+            { id: 33, soal: "Sebelum memulai aktivitas olahraga, kita sebaiknya berdoa dan melakukan...", pilihan: ["A. Pemanasan", "B. Pendinginan", "C. Makan berat", "D. Mandi air dingin"], jawaban: 0 },
+            { id: 34, soal: "Tujuan melakukan pendinginan (cooling down) setelah berolahraga adalah...", pilihan: ["A. Mengembalikan kondisi tubuh secara bertahap", "B. Menambah rasa lelah", "C. Mempercepat haus", "D. Memperkencang emosi"], jawaban: 0 },
+            { id: 35, soal: "Sikap badan yang benar saat berdiri tegap adalah...", pilihan: ["A. Bungkuk ke depan", "B. Tegap dan dada membusung rileks", "C. Miring ke kanan", "D. Menunduk ke bawah"], jawaban: 1 },
+            { id: 36, soal: "Penyakit menular yang dapat dicegah dengan rutin mencuci tangan pakai sabun adalah...", pilihan: ["A. Diare dan Influenza", "B. Patah tulang", "C. Terkilir", "D. Keseleo kaki"], jawaban: 0 },
+            { id: 37, soal: "Latihan meloncat ke atas dengan dua kaki melatih kekuatan otot...", pilihan: ["A. Tangan", "B. Kaki", "C. Leher", "D. Perut"], jawaban: 1 },
+            { id: 38, soal: "Batas waktu mencuci tangan dengan sabun yang disarankan kesehatan adalah...", pilihan: ["A. 2 Detik", "B. 20 Detik", "C. 10 Menit", "D. 1 Jam"], jawaban: 1 },
+            { id: 39, soal: "Gerakan melompat berbeda dengan meloncat. Melompat bertumpu pada...", pilihan: ["A. Dua kaki", "B. Satu kaki", "C. Tangan", "D. Tumit"], jawaban: 1 },
+            { id: 40, soal: "Olahraga lari estafet dilakukan secara berkelompok dengan menyerahkan...", pilihan: ["A. Tongkat estafet", "B. Bola kasti", "C. Bendera besar", "D. Tali"], jawaban: 0 },
+            { id: 41, soal: "Organ tubuh yang berfungsi memompa darah ke seluruh tubuh saat berolahraga adalah...", pilihan: ["A. Jantung", "B. Lambung", "C. Paru-paru", "D. Hati"], jawaban: 0 },
+            { id: 42, soal: "Minum air putih secukupnya setelah berolahraga berguna untuk mencegah...", pilihan: ["A. Dehidrasi (kekurangan cairan)", "B. Lapar berat", "C. Kebas jari", "D. Demam"], jawaban: 0 },
+            { id: 43, soal: "Penggunaan helm saat bersepeda berguna untuk melindungi bagian...", pilihan: ["A. Siku", "B. Lutut", "C. Kepala", "D. Bahu"], jawaban: 2 },
+            { id: 44, soal: "Berikut ini adalah contoh jajanan sehat untuk anak sekolah dasar...", pilihan: ["A. Buah potong segar dan susu", "B. Makanan berpewarna tekstil", "C. Snack sangat asin tanpa izin BPOM", "D. Es lilin kotor"], jawaban: 0 },
+            { id: 45, soal: "Jika teman terjatuh dan cedera saat bermain bola, sikap terbaik kita adalah...", pilihan: ["A. Mengetawakannya", "B. Segera menolong dan melapor ke guru", "C. Pura-pura tidak melihat", "D. Meninggalkannya"], jawaban: 1 },
+            { id: 46, soal: "Gerakan sikap lilin pada senam lantai bertumpu pada...", pilihan: ["A. Pundak dan kepala belakang", "B. Dahi", "C. Telapak tangan", "D. Kaki"], jawaban: 0 },
+            { id: 47, soal: "Jumlah pemain dalam satu tim bola basket di lapangan adalah...", pilihan: ["A. 5 Orang", "B. 6 Orang", "C. 11 Orang", "D. 4 Orang"], jawaban: 0 },
+            { id: 48, soal: "Aktivitas fisik teratur dapat menjaga tubuh tetap sehat dan terhindar dari penyakit...", pilihan: ["A. Obesitas / Kegemukan", "B. Kebahagiaan", "C. Kecerdasan", "D. Kesegaran"], jawaban: 0 },
+            { id: 49, soal: "Berikut yang BUKAN merupakan prinsip kerja sama dalam tim olahraga adalah...", pilihan: ["A. saling mendukung", "B. Ingin menang sendiri", "C. Komunikasi baik", "D. Disiplin posisi"], jawaban: 1 },
+            { id: 50, soal: "Induk organisasi sepak bola seluruh Indonesia disingkat...", pilihan: ["A. PBVSI", "B. PSSI", "C. PERBASI", "D. PBSI"], jawaban: 1 }
         ];
 
-        const EMOTICON_TILES = ['⚽', 'ߏ', 'ߎ', 'ߏ', 'ߏ', 'ߥ', 'ߥ', 'ߏ', 'ߏ', 'ߚ', 'ߎ', 'ߛ'];
+        // EMOTICON ICONS FOR MAHJONG TILES (PJOK & SPORTS THEME)
+        const TILE_ICONS = ["⚽", "🏀", "🏐", "🎾", "🏃", "🏊", "🚴", "🥊", "🏸", "🧘", "🥗", "🥇"];
 
-        class SoundEngine {
-            constructor() {
-                this.ctx = null;
-                this.enabled = true;
-            }
+        // AUDIO SYNTHESIS ENGINE
+        let audioEnabled = true;
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        let audioCtx = null;
 
-            init() {
-                if (!this.ctx) {
-                    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
-                }
-            }
-
-            playSelect() {
-                if (!this.enabled) return;
-                this.init();
-                const osc = this.ctx.createOscillator();
-                const gain = this.ctx.createGain();
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(500, this.ctx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(700, this.ctx.currentTime + 0.05);
-                gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
-                gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.05);
-                osc.connect(gain);
-                gain.connect(this.ctx.destination);
-                osc.start();
-                osc.stop(this.ctx.currentTime + 0.05);
-            }
-
-            playConnectPath() {
-                if (!this.enabled) return;
-                this.init();
-                const now = this.ctx.currentTime;
-                [600, 800, 1000, 1200].forEach((freq, i) => {
-                    const osc = this.ctx.createOscillator();
-                    const gain = this.ctx.createGain();
-                    osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(freq, now + i * 0.04);
-                    gain.gain.setValueAtTime(0.2, now + i * 0.04);
-                    gain.gain.linearRampToValueAtTime(0.01, now + i * 0.04 + 0.08);
-                    osc.connect(gain);
-                    gain.connect(this.ctx.destination);
-                    osc.start(now + i * 0.04);
-                    osc.stop(now + i * 0.04 + 0.08);
-                });
-            }
-
-            playCorrect() {
-                if (!this.enabled) return;
-                this.init();
-                const now = this.ctx.currentTime;
-                [587.33, 880].forEach((freq, i) => {
-                    const osc = this.ctx.createOscillator();
-                    const gain = this.ctx.createGain();
+        function playSound(type) {
+            if (!audioEnabled) return;
+            try {
+                if (!audioCtx) audioCtx = new AudioCtx();
+                const now = audioCtx.currentTime;
+                
+                if (type === 'click') {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
                     osc.type = 'sine';
-                    osc.frequency.setValueAtTime(freq, now + i * 0.1);
-                    gain.gain.setValueAtTime(0.25, now + i * 0.1);
-                    gain.gain.linearRampToValueAtTime(0.01, now + i * 0.1 + 0.2);
+                    osc.frequency.setValueAtTime(400, now);
+                    osc.frequency.exponentialRampToValueAtTime(800, now + 0.08);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.08);
                     osc.connect(gain);
-                    gain.connect(this.ctx.destination);
-                    osc.start(now + i * 0.1);
-                    osc.stop(now + i * 0.1 + 0.2);
-                });
-            }
-
-            playWrong() {
-                if (!this.enabled) return;
-                this.init();
-                const now = this.ctx.currentTime;
-                const osc = this.ctx.createOscillator();
-                const gain = this.ctx.createGain();
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(220, now);
-                osc.frequency.linearRampToValueAtTime(110, now + 0.2);
-                gain.gain.setValueAtTime(0.25, now);
-                gain.gain.linearRampToValueAtTime(0.01, now + 0.2);
-                osc.connect(gain);
-                gain.connect(this.ctx.destination);
-                osc.start(now);
-                osc.stop(now + 0.2);
-            }
-
-            playWin() {
-                if (!this.enabled) return;
-                this.init();
-                const now = this.ctx.currentTime;
-                [440, 554.37, 659.25, 880].forEach((f, i) => {
-                    const osc = this.ctx.createOscillator();
-                    const gain = this.ctx.createGain();
-                    osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(f, now + i * 0.12);
-                    gain.gain.setValueAtTime(0.3, now + i * 0.12);
-                    gain.gain.linearRampToValueAtTime(0.01, now + i * 0.12 + 0.25);
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.08);
+                } else if (type === 'match') {
+                    const notes = [523.25, 659.25, 783.99]; // C5, E5, G5
+                    notes.forEach((freq, idx) => {
+                        const osc = audioCtx.createOscillator();
+                        const gain = audioCtx.createGain();
+                        osc.type = 'triangle';
+                        osc.frequency.setValueAtTime(freq, now + idx * 0.06);
+                        gain.gain.setValueAtTime(0.2, now + idx * 0.06);
+                        gain.gain.linearRampToValueAtTime(0.01, now + idx * 0.06 + 0.15);
+                        osc.connect(gain);
+                        gain.connect(audioCtx.destination);
+                        osc.start(now + idx * 0.06);
+                        osc.stop(now + idx * 0.06 + 0.15);
+                    });
+                } else if (type === 'correct') {
+                    const notes = [523.25, 659.25, 783.99, 1046.50];
+                    notes.forEach((freq, idx) => {
+                        const osc = audioCtx.createOscillator();
+                        const gain = audioCtx.createGain();
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+                        gain.gain.setValueAtTime(0.25, now + idx * 0.08);
+                        gain.gain.linearRampToValueAtTime(0.01, now + idx * 0.08 + 0.2);
+                        osc.connect(gain);
+                        gain.connect(audioCtx.destination);
+                        osc.start(now + idx * 0.08);
+                        osc.stop(now + idx * 0.08 + 0.2);
+                    });
+                } else if (type === 'wrong') {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(180, now);
+                    osc.frequency.linearRampToValueAtTime(110, now + 0.25);
+                    gain.gain.setValueAtTime(0.3, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.25);
                     osc.connect(gain);
-                    gain.connect(this.ctx.destination);
-                    osc.start(now + i * 0.12);
-                    osc.stop(now + i * 0.12 + 0.25);
-                });
-            }
-        }
-
-        const soundEngine = new SoundEngine();
-
-        const ROWS = 8;
-        const COLS = 8;
-
-        function shuffleArray(array) {
-            let arr = [...array];
-            for (let i = arr.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [arr[i], arr[j]] = [arr[j], arr[i]];
-            }
-            return arr;
-        }
-
-        function isLineClear(grid, r1, c1, r2, c2) {
-            if (r1 !== r2 && c1 !== c2) return false;
-            if (r1 === r2) {
-                let minC = Math.min(c1, c2);
-                let maxC = Math.max(c1, c2);
-                for (let c = minC + 1; c < maxC; c++) {
-                    if (grid[r1][c] !== null) return false;
+                    gain.connect(audioCtx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.25);
                 }
-                return true;
+            } catch (e) {
+                console.log("Audio synthesis error or blocked");
+            }
+        }
+
+        function toggleAudio() {
+            audioEnabled = !audioEnabled;
+            const btn = document.getElementById('btn-sound');
+            btn.innerHTML = audioEnabled 
+                ? '<i class="fa-solid fa-volume-high text-base"></i>' 
+                : '<i class="fa-solid fa-volume-xmark text-base text-rose-400"></i>';
+        }
+
+        // FULLSCREEN HANDLER
+        function toggleFullScreen() {
+            playSound('click');
+            const icon = document.getElementById('fullscreen-icon');
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().then(() => {
+                    if (icon) icon.className = "fa-solid fa-compress text-lg";
+                }).catch(err => {
+                    console.log("Error attempting to enable fullscreen:", err);
+                });
             } else {
-                let minR = Math.min(r1, r2);
-                let maxR = Math.max(r1, r2);
-                for (let r = minR + 1; r < maxR; r++) {
-                    if (grid[r][c1] !== null) return false;
+                if (document.exitFullscreen) {
+                    document.exitFullscreen().then(() => {
+                        if (icon) icon.className = "fa-solid fa-expand text-lg";
+                    });
                 }
-                return true;
             }
         }
 
-        function findConnectPath(grid, r1, c1, r2, c2) {
-            if (r1 === r2 && c1 === c2) return null;
-            if (!grid[r1][c1] || !grid[r2][c2]) return null;
-            if (grid[r1][c1].emoticon !== grid[r2][c2].emoticon) return null;
+        // GAME STATE MANAGEMENT
+        const GRID_ROWS = 6;
+        const GRID_COLS = 6;
+        let isGamePaused = false;
 
-            // 1. Straight segment (0 Turns)
-            if (isLineClear(grid, r1, c1, r2, c2)) {
-                return [{r: r1, c: c1}, {r: r2, c: c2}];
+        class PlayerState {
+            constructor(id, name, isP2 = false) {
+                this.id = id;
+                this.name = name;
+                this.isP2 = isP2;
+                this.score = 0;
+                this.hp = 5;
+                this.maxHp = 5;
+                this.streak = 0;
+                this.grid = []; // 2D array [row][col]
+                this.selectedTile = null; // {r, c}
+                this.questionQueue = [];
+                this.currentQuestion = null;
+                this.timerInterval = null;
+                this.timeLeft = 25;
+            }
+        }
+
+        let player1 = null;
+        let player2 = null;
+
+        // SHUFFLE ALGORITHM (Fisher-Yates)
+        function shuffleArray(arr) {
+            const array = [...arr];
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // NAVIGATION CONTROL
+        function showMainMenu() {
+            playSound('click');
+            if (isGamePaused) unpauseGame();
+            document.getElementById('main-menu').classList.remove('hidden');
+            document.getElementById('pause-modal').classList.add('hidden');
+            if (player1) clearInterval(player1.timerInterval);
+            if (player2) clearInterval(player2.timerInterval);
+        }
+
+        function openPlayerSetup() {
+            playSound('click');
+            document.getElementById('setup-modal').classList.remove('hidden');
+        }
+
+        function closePlayerSetup() {
+            playSound('click');
+            document.getElementById('setup-modal').classList.add('hidden');
+        }
+
+        function openHowToPlay() {
+            playSound('click');
+            document.getElementById('modal-how-to-play').classList.remove('hidden');
+        }
+
+        function openAboutModal() {
+            playSound('click');
+            document.getElementById('modal-about').classList.remove('hidden');
+        }
+
+        function closeModal(id) {
+            playSound('click');
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        // PAUSE & RESUME GAME LOGIC
+        function togglePauseGame() {
+            playSound('click');
+            if (!player1 || !player2) return;
+
+            if (isGamePaused) {
+                unpauseGame();
+            } else {
+                pauseGame();
+            }
+        }
+
+        function pauseGame() {
+            isGamePaused = true;
+            document.getElementById('pause-modal').classList.remove('hidden');
+            document.getElementById('icon-pause').className = "fa-solid fa-play text-base text-emerald-400";
+            document.getElementById('text-pause').innerText = "Resume";
+
+            // Freeze timers
+            if (player1 && player1.timerInterval) clearInterval(player1.timerInterval);
+            if (player2 && player2.timerInterval) clearInterval(player2.timerInterval);
+        }
+
+        function unpauseGame() {
+            isGamePaused = false;
+            document.getElementById('pause-modal').classList.add('hidden');
+            document.getElementById('icon-pause').className = "fa-solid fa-pause text-base text-fuchsia-400";
+            document.getElementById('text-pause').innerText = "Pause";
+
+            // Resume active timers if modal open
+            const p1ModalOpen = !document.getElementById('p1-question-modal').classList.contains('hidden');
+            const p2ModalOpen = !document.getElementById('p2-question-modal').classList.contains('hidden');
+
+            if (p1ModalOpen && player1) resumePlayerTimer(player1);
+            if (p2ModalOpen && player2) resumePlayerTimer(player2);
+        }
+
+        function resumePlayerTimer(player) {
+            clearInterval(player.timerInterval);
+            player.timerInterval = setInterval(() => {
+                if (isGamePaused) return;
+                player.timeLeft--;
+                updateTimerUI(player);
+
+                if (player.timeLeft <= 0) {
+                    clearInterval(player.timerInterval);
+                    handleAnswerTimeout(player);
+                }
+            }, 1000);
+        }
+
+        // START GAME INITIALIZATION
+        function startGame() {
+            playSound('click');
+            if (isGamePaused) unpauseGame();
+
+            const p1Name = document.getElementById('input-p1-name').value.trim() || 'Tim Garuda';
+            const p2Name = document.getElementById('input-p2-name').value.trim() || 'Tim Rajawali';
+
+            player1 = new PlayerState('p1', p1Name, false);
+            player2 = new PlayerState('p2', p2Name, true);
+
+            // Set display names
+            document.getElementById('p1-display-name').innerText = player1.name;
+            document.getElementById('p2-display-name').innerText = player2.name;
+
+            // Generate independent shuffled question banks for each player
+            player1.questionQueue = shuffleArray(BANK_SOAL_PJOK);
+            player2.questionQueue = shuffleArray(BANK_SOAL_PJOK);
+
+            // Generate grid tiles
+            initBoardGrid(player1);
+            initBoardGrid(player2);
+
+            // Render UI
+            updatePlayerHeaderUI(player1);
+            updatePlayerHeaderUI(player2);
+
+            // Hide Setup & Main Menu
+            document.getElementById('setup-modal').classList.add('hidden');
+            document.getElementById('main-menu').classList.add('hidden');
+            document.getElementById('game-over-modal').classList.add('hidden');
+            document.getElementById('pause-modal').classList.add('hidden');
+        }
+
+        function restartGame() {
+            startGame();
+        }
+
+        // GENERATE MAHJONG GRID (6x6 = 36 tiles = 18 pairs)
+        function initBoardGrid(player) {
+            const totalPairs = (GRID_ROWS * GRID_COLS) / 2;
+            let tileIcons = [];
+
+            for (let i = 0; i < totalPairs; i++) {
+                const icon = TILE_ICONS[i % TILE_ICONS.length];
+                tileIcons.push(icon, icon);
             }
 
-            // 2. 1 Turn (2 Segments)
-            if (grid[r1][c2] === null && isLineClear(grid, r1, c1, r1, c2) && isLineClear(grid, r1, c2, r2, c2)) {
-                return [{r: r1, c: c1}, {r: r1, c: c2}, {r: r2, c: c2}];
-            }
-            if (grid[r2][c1] === null && isLineClear(grid, r1, c1, r2, c1) && isLineClear(grid, r2, c1, r2, c2)) {
-                return [{r: r1, c: c1}, {r: r2, c: c1}, {r: r2, c: c2}];
+            tileIcons = shuffleArray(tileIcons);
+
+            player.grid = [];
+            let index = 0;
+            for (let r = 0; r < GRID_ROWS; r++) {
+                const row = [];
+                for (let c = 0; c < GRID_COLS; c++) {
+                    row.push(tileIcons[index++]);
+                }
+                player.grid.push(row);
             }
 
-            // 3. 2 Turns (3 Segments)
-            for (let c = 0; c < COLS; c++) {
-                if (c === c1 || c === c2) continue;
-                if (grid[r1][c] === null && isLineClear(grid, r1, c1, r1, c)) {
-                    if (grid[r2][c] === null && isLineClear(grid, r1, c, r2, c) && isLineClear(grid, r2, c, r2, c2)) {
-                        return [{r: r1, c: c1}, {r: r1, c: c}, {r: r2, c: c}, {r: r2, c: c2}];
+            renderGridUI(player);
+        }
+
+        // RENDER GRID TO DOM
+        function renderGridUI(player) {
+            const gridEl = document.getElementById(`${player.id}-grid`);
+            gridEl.innerHTML = '';
+
+            for (let r = 0; r < GRID_ROWS; r++) {
+                for (let c = 0; c < GRID_COLS; c++) {
+                    const val = player.grid[r][c];
+                    const tileDiv = document.createElement('div');
+                    
+                    const innerClass = player.isP2 ? 'mahjong-tile-p2-inner' : 'mahjong-tile-inner';
+                    const outerClass = player.isP2 ? 'mahjong-tile-p2' : 'mahjong-tile';
+
+                    tileDiv.className = `mahjong-tile ${outerClass} cursor-pointer aspect-square flex items-center justify-center p-0.5 select-none ${val === null ? 'invisible pointer-events-none' : ''}`;
+                    tileDiv.dataset.row = r;
+                    tileDiv.dataset.col = c;
+
+                    if (player.selectedTile && player.selectedTile.r === r && player.selectedTile.c === c) {
+                        tileDiv.classList.add('selected');
                     }
+
+                    if (val !== null) {
+                        tileDiv.innerHTML = `
+                            <div class="w-full h-full ${innerClass} flex items-center justify-center text-xl sm:text-2xl md:text-3xl font-extrabold shadow-md transition-transform">
+                                ${val}
+                            </div>
+                        `;
+                        tileDiv.onclick = () => onTileClick(player, r, c);
+                    }
+
+                    gridEl.appendChild(tileDiv);
+                }
+            }
+        }
+
+        // TILE CLICK HANDLER
+        function onTileClick(player, r, c) {
+            if (isGamePaused) return;
+            playSound('click');
+            if (player.grid[r][c] === null) return;
+
+            // First Tile Selection
+            if (!player.selectedTile) {
+                player.selectedTile = { r, c };
+                renderGridUI(player);
+                return;
+            }
+
+            // Clicked same tile -> Deselect
+            if (player.selectedTile.r === r && player.selectedTile.c === c) {
+                player.selectedTile = null;
+                renderGridUI(player);
+                return;
+            }
+
+            const r1 = player.selectedTile.r;
+            const c1 = player.selectedTile.c;
+            const r2 = r;
+            const c2 = c;
+
+            // Check if icon matches
+            if (player.grid[r1][c1] === player.grid[r2][c2]) {
+                // Check if path exists (adjacent or line path)
+                const path = findMatchingPath(player.grid, r1, c1, r2, c2);
+                if (path) {
+                    // Draw dynamic SVG Connecting Path
+                    drawConnectingPath(player, path);
+                    playSound('match');
+
+                    setTimeout(() => {
+                        clearConnectingPath(player);
+                        // Remove matched tiles
+                        player.grid[r1][c1] = null;
+                        player.grid[r2][c2] = null;
+                        player.selectedTile = null;
+                        renderGridUI(player);
+
+                        // Trigger Question Pop-up for this player!
+                        triggerQuestionModal(player);
+                    }, 400);
+
+                    return;
                 }
             }
 
-            for (let r = 0; r < ROWS; r++) {
-                if (r === r1 || r === r2) continue;
-                if (grid[r][c1] === null && isLineClear(grid, r1, c1, r, c1)) {
-                    if (grid[r][c2] === null && isLineClear(grid, r, c1, r, c2) && isLineClear(grid, r, c2, r2, c2)) {
-                        return [{r: r1, c: c1}, {r: r, c: c1}, {r: r, c: c2}, {r: r2, c: c2}];
+            // Not a match or no path -> Change selection to new tile
+            player.selectedTile = { r, c };
+            renderGridUI(player);
+        }
+
+        // PATHFINDING ALGORITHM (Onet Line Matching: 0, 1, or 2 turns including outer boundaries)
+        function findMatchingPath(grid, r1, c1, r2, c2) {
+            // Helper to check if cell is empty or target
+            const isEmpty = (r, c) => {
+                if (r < -1 || r > GRID_ROWS || c < -1 || c > GRID_COLS) return false;
+                if (r === -1 || r === GRID_ROWS || c === -1 || c === GRID_COLS) return true;
+                if (r === r2 && c === c2) return true;
+                return grid[r][c] === null;
+            };
+
+            // Straight line check
+            const checkLine = (startR, startC, endR, endC) => {
+                if (startR !== endR && startC !== endC) return false;
+                if (startR === endR) {
+                    const minC = Math.min(startC, endC);
+                    const maxC = Math.max(startC, endC);
+                    for (let c = minC + 1; c < maxC; c++) {
+                        if (!isEmpty(startR, c)) return false;
                     }
+                    return true;
+                } else {
+                    const minR = Math.min(startR, endR);
+                    const maxR = Math.max(startR, endR);
+                    for (let r = minR + 1; r < maxR; r++) {
+                        if (!isEmpty(r, startC)) return false;
+                    }
+                    return true;
+                }
+            };
+
+            // 0 Turns (Direct Line)
+            if (checkLine(r1, c1, r2, c2)) {
+                return [{ r: r1, c: c1 }, { r: r2, c: c2 }];
+            }
+
+            // 1 Turn (Corner Point)
+            if (isEmpty(r1, c2) && checkLine(r1, c1, r1, c2) && checkLine(r1, c2, r2, c2)) {
+                return [{ r: r1, c: c1 }, { r: r1, c: c2 }, { r: r2, c: c2 }];
+            }
+            if (isEmpty(r2, c1) && checkLine(r1, c1, r2, c1) && checkLine(r2, c1, r2, c2)) {
+                return [{ r: r1, c: c1 }, { r: r2, c: c1 }, { r: r2, c: c2 }];
+            }
+
+            // 2 Turns (Z-shape or Outer Loop)
+            for (let r = -1; r <= GRID_ROWS; r++) {
+                if (isEmpty(r, c1) && isEmpty(r, c2) && checkLine(r1, c1, r, c1) && checkLine(r, c1, r, c2) && checkLine(r, c2, r2, c2)) {
+                    return [{ r: r1, c: c1 }, { r, c: c1 }, { r, c: c2 }, { r: r2, c: c2 }];
+                }
+            }
+
+            for (let c = -1; c <= GRID_COLS; c++) {
+                if (isEmpty(r1, c) && isEmpty(r2, c) && checkLine(r1, c1, r1, c) && checkLine(r1, c, r2, c) && checkLine(r2, c, r2, c2)) {
+                    return [{ r: r1, c: c1 }, { r: r1, c }, { r: r2, c }, { r: r2, c: c2 }];
                 }
             }
 
             return null;
         }
 
-        let isGamePaused = false;
-        let isGameOver = false;
-
-        class PlayerState {
-            constructor(id, name) {
-                this.id = id;
-                this.name = name;
-                this.hp = 5;
-                this.score = 0;
-                this.streak = 0;
-                this.maxStreak = 0;
-                this.grid = Array(ROWS).fill(null).map(() => Array(COLS).fill(null));
-                this.selectedTile = null;
-                this.remainingTilesCount = 0;
-                this.questions = [];
-                this.currentQuestionIndex = 0;
-                this.timerInterval = null;
-                this.timeRemaining = 25;
-                this.activeQuestion = null;
-                this.isAnsweringQuiz = false;
-            }
-
-            reset() {
-                this.hp = 5;
-                this.score = 0;
-                this.streak = 0;
-                this.maxStreak = 0;
-                this.selectedTile = null;
-                this.questions = shuffleArray([...BANK_SOAL_PJOK]);
-                this.currentQuestionIndex = 0;
-                this.clearTimer();
-                this.activeQuestion = null;
-                this.isAnsweringQuiz = false;
-
-                this.initGrid();
-            }
-
-            initGrid() {
-                this.grid = Array(ROWS).fill(null).map(() => Array(COLS).fill(null));
-
-                let pool = [];
-                for (let i = 0; i < 18; i++) {
-                    const emo = EMOTICON_TILES[i % EMOTICON_TILES.length];
-                    pool.push(emo, emo);
-                }
-                pool = shuffleArray(pool);
-
-                let idx = 0;
-                for (let r = 1; r <= 6; r++) {
-                    for (let c = 1; c <= 6; c++) {
-                        this.grid[r][c] = {
-                            id: `${this.id}_${r}_${c}`,
-                            emoticon: pool[idx++]
-                        };
-                    }
-                }
-                this.remainingTilesCount = 36;
-
-                if (!this.hasValidMoves()) {
-                    this.shuffleGrid();
-                }
-            }
-
-            hasValidMoves() {
-                const tiles = [];
-                for (let r = 1; r <= 6; r++) {
-                    for (let c = 1; c <= 6; c++) {
-                        if (this.grid[r][c]) {
-                            tiles.push({r, c, emo: this.grid[r][c].emoticon});
-                        }
-                    }
-                }
-
-                for (let i = 0; i < tiles.length; i++) {
-                    for (let j = i + 1; j < tiles.length; j++) {
-                        if (tiles[i].emo === tiles[j].emo) {
-                            if (findConnectPath(this.grid, tiles[i].r, tiles[i].c, tiles[j].r, tiles[j].c)) {
-                                return true;
-                            }
-                        }
-                    }
-                }
-                return false;
-            }
-
-            shuffleGrid() {
-                const activeTiles = [];
-                for (let r = 1; r <= 6; r++) {
-                    for (let c = 1; c <= 6; c++) {
-                        if (this.grid[r][c]) {
-                            activeTiles.push(this.grid[r][c].emoticon);
-                        }
-                    }
-                }
-
-                let shuffled = shuffleArray(activeTiles);
-                let idx = 0;
-                for (let r = 1; r <= 6; r++) {
-                    for (let c = 1; c <= 6; c++) {
-                        if (this.grid[r][c]) {
-                            this.grid[r][c].emoticon = shuffled[idx++];
-                        }
-                    }
-                }
-
-                let attempts = 0;
-                while (!this.hasValidMoves() && attempts < 10) {
-                    shuffled = shuffleArray(activeTiles);
-                    idx = 0;
-                    for (let r = 1; r <= 6; r++) {
-                        for (let c = 1; c <= 6; c++) {
-                            if (this.grid[r][c]) {
-                                this.grid[r][c].emoticon = shuffled[idx++];
-                            }
-                        }
-                    }
-                    attempts++;
-                }
-            }
-
-            clearTimer() {
-                if (this.timerInterval) {
-                    clearInterval(this.timerInterval);
-                    this.timerInterval = null;
-                }
-            }
-        }
-
-        const playerA = new PlayerState('pA', 'PEMAIN A');
-        const playerB = new PlayerState('pB', 'PEMAIN B');
-
-        function startGame() {
-            soundEngine.init();
-            document.getElementById('mainMenuScreen').classList.add('hidden');
-            document.getElementById('gameplayScreen').classList.remove('hidden');
-            initDuelGame();
-        }
-
-        function initDuelGame() {
-            isGamePaused = false;
-            isGameOver = false;
-
-            playerA.reset();
-            playerB.reset();
-
-            document.getElementById('pA-quizModal').classList.add('hidden');
-            document.getElementById('pB-quizModal').classList.add('hidden');
-            document.getElementById('resultModal').classList.add('hidden');
-
-            renderAll();
-        }
-
-        function renderAll() {
-            renderPlayerBoard(playerA);
-            renderPlayerBoard(playerB);
-        }
-
-        function renderPlayerBoard(player) {
-            const prefix = player.id;
-
-            document.getElementById(`${prefix}-hp`).innerText = player.hp;
-            document.getElementById(`${prefix}-score`).innerText = player.score;
-            document.getElementById(`${prefix}-streak`).innerText = `ߔ ${player.streak}/5`;
-
-            const gridEl = document.getElementById(`${prefix}-grid`);
-            gridEl.innerHTML = '';
-
-            for (let r = 0; r < ROWS; r++) {
-                for (let c = 0; c < COLS; c++) {
-                    const tileData = player.grid[r][c];
-
-                    if (tileData) {
-                        const isSelected = player.selectedTile && player.selectedTile.r === r && player.selectedTile.c === c;
-                        const btn = document.createElement('button');
-                        btn.className = `connect-tile ${isSelected ? 'selected' : ''} ${player.isAnsweringQuiz || isGamePaused ? 'disabled' : ''}`;
-                        btn.innerText = tileData.emoticon;
-                        btn.onclick = () => handleTileClick(player, r, c);
-                        gridEl.appendChild(btn);
-                    } else {
-                        const emptyDiv = document.createElement('div');
-                        emptyDiv.className = 'empty-slot';
-                        gridEl.appendChild(emptyDiv);
-                    }
-                }
-            }
-        }
-
-        function handleTileClick(player, r, c) {
-            if (player.isAnsweringQuiz || isGamePaused || isGameOver) return;
-            if (!player.grid[r][c]) return;
-
-            soundEngine.playSelect();
-
-            if (!player.selectedTile) {
-                player.selectedTile = { r, c };
-                renderPlayerBoard(player);
-                return;
-            }
-
-            if (player.selectedTile.r === r && player.selectedTile.c === c) {
-                player.selectedTile = null;
-                renderPlayerBoard(player);
-                return;
-            }
-
-            const first = player.selectedTile;
-            const path = findConnectPath(player.grid, first.r, first.c, r, c);
-
-            if (path) {
-                soundEngine.playConnectPath();
-                drawSVGPath(player.id, path);
-
-                player.selectedTile = null;
-
-                setTimeout(() => {
-                    player.grid[first.r][first.c] = null;
-                    player.grid[r][c] = null;
-                    player.remainingTilesCount -= 2;
-
-                    clearSVGPath(player.id);
-                    renderPlayerBoard(player);
-
-                    triggerQuizModal(player);
-
-                    if (player.remainingTilesCount > 0 && !player.hasValidMoves()) {
-                        player.shuffleGrid();
-                        renderPlayerBoard(player);
-                    }
-
-                }, 300);
-
-            } else {
-                player.selectedTile = { r, c };
-                renderPlayerBoard(player);
-            }
-        }
-
-        function drawSVGPath(playerId, path) {
-            const svgEl = document.getElementById(`${playerId}-svg`);
-            const gridEl = document.getElementById(`${playerId}-grid`);
-
-            if (!svgEl || !gridEl) return;
-
+        // DRAW CONNECTING PATH LASER ON SVG CANVAS
+        function drawConnectingPath(player, path) {
+            const svg = document.getElementById(`${player.id}-svg-canvas`);
+            const gridEl = document.getElementById(`${player.id}-grid`);
             const rect = gridEl.getBoundingClientRect();
-            const cellW = rect.width / COLS;
-            const cellH = rect.height / ROWS;
+            const svgRect = svg.getBoundingClientRect();
 
-            let points = path.map(pt => {
-                const x = (pt.c + 0.5) * cellW;
-                const y = (pt.r + 0.5) * cellH;
+            const cellW = rect.width / GRID_COLS;
+            const cellH = rect.height / GRID_ROWS;
+
+            const points = path.map(p => {
+                const x = (p.c + 0.5) * cellW + (rect.left - svgRect.left);
+                const y = (p.r + 0.5) * cellH + (rect.top - svgRect.top);
                 return `${x},${y}`;
-            }).join(' ');
-
-            svgEl.innerHTML = `
-                <defs>
-                    <marker id="arrow-${playerId}" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                        <path d="M 0 0 L 10 5 L 0 10 z" fill="#facc15" />
-                    </marker>
-                </defs>
-                <polyline points="${points}" class="path-line" marker-end="url(#arrow-${playerId})" />
-            `;
-        }
-
-        function clearSVGPath(playerId) {
-            const svgEl = document.getElementById(`${playerId}-svg`);
-            if (svgEl) {
-                svgEl.innerHTML = `
-                    <defs>
-                        <marker id="arrow-${playerId}" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                            <path d="M 0 0 L 10 5 L 0 10 z" fill="#facc15" />
-                        </marker>
-                    </defs>
-                `;
-            }
-        }
-
-        function triggerQuizModal(player) {
-            player.isAnsweringQuiz = true;
-            renderPlayerBoard(player);
-
-            const prefix = player.id;
-            const modalEl = document.getElementById(`${prefix}-quizModal`);
-            const timerEl = document.getElementById(`${prefix}-timer`);
-            const qTextEl = document.getElementById(`${prefix}-qText`);
-            const qOptionsEl = document.getElementById(`${prefix}-qOptions`);
-            const feedbackEl = document.getElementById(`${prefix}-feedback`);
-
-            if (player.currentQuestionIndex >= player.questions.length) {
-                player.questions = shuffleArray([...BANK_SOAL_PJOK]);
-                player.currentQuestionIndex = 0;
-            }
-
-            const currentQ = player.questions[player.currentQuestionIndex];
-            player.activeQuestion = currentQ;
-            player.timeRemaining = 25;
-
-            qTextEl.innerText = `${player.currentQuestionIndex + 1}. ${currentQ.soal}`;
-            feedbackEl.className = 'hidden text-center text-[10px] sm:text-xs font-bold p-1 rounded-md flex-shrink-0';
-            feedbackEl.innerText = '';
-
-            qOptionsEl.innerHTML = '';
-            const optionLabels = ['A', 'B', 'C', 'D'];
-
-            currentQ.pilihan.forEach((optText, idx) => {
-                const btn = document.createElement('button');
-                btn.className = 'w-full p-1 sm:p-1.5 bg-sea-800 hover:bg-sea-700 text-left text-[10px] sm:text-xs font-semibold rounded-lg border border-sea-400/30 flex items-center gap-1.5 transition-all active:scale-[0.98] text-sea-100 leading-tight min-h-[34px]';
-                btn.innerHTML = `
-                    <span class="w-4 h-4 sm:w-5 sm:h-5 rounded-md bg-sea-600 text-yellow-300 font-fredoka font-bold flex items-center justify-center text-[9px] sm:text-[10px] flex-shrink-0">${optionLabels[idx]}</span>
-                    <span class="line-clamp-2">${optText}</span>
-                `;
-                btn.onclick = () => handleQuizAnswer(player, idx);
-                qOptionsEl.appendChild(btn);
             });
 
-            modalEl.classList.remove('hidden');
+            const strokeColor = player.isP2 ? '#ff00b4' : '#00f0ff';
+            const lineClass = player.isP2 ? 'path-line-p2' : 'path-line';
 
-            player.clearTimer();
-            timerEl.innerText = '25s';
-
-            player.timerInterval = setInterval(() => {
-                if (isGamePaused) return;
-
-                player.timeRemaining--;
-                timerEl.innerText = `${player.timeRemaining}s`;
-
-                if (player.timeRemaining <= 0) {
-                    player.clearTimer();
-                    handleQuizAnswer(player, -1);
-                }
-            }, 1000);
+            svg.innerHTML = `
+                <polyline points="${points.join(' ')}" 
+                          fill="none" 
+                          stroke="${strokeColor}" 
+                          stroke-width="5" 
+                          stroke-linecap="round" 
+                          stroke-linejoin="round"
+                          class="${lineClass}" />
+            `;
         }
 
-        function handleQuizAnswer(player, chosenIdx) {
-            player.clearTimer();
-            const prefix = player.id;
-            const qOptionsEl = document.getElementById(`${prefix}-qOptions`);
-            const feedbackEl = document.getElementById(`${prefix}-feedback`);
-            const currentQ = player.activeQuestion;
+        function clearConnectingPath(player) {
+            const svg = document.getElementById(`${player.id}-svg-canvas`);
+            svg.innerHTML = '';
+        }
 
-            const buttons = qOptionsEl.querySelectorAll('button');
-            buttons.forEach(btn => btn.disabled = true);
+        // QUESTION POP-UP INTERACTIVE LOGIC
+        function triggerQuestionModal(player) {
+            if (player.questionQueue.length === 0) {
+                player.questionQueue = shuffleArray(BANK_SOAL_PJOK);
+            }
 
-            const isCorrect = chosenIdx === currentQ.jawaban;
+            player.currentQuestion = player.questionQueue.pop();
+
+            const modal = document.getElementById(`${player.id}-question-modal`);
+            const qText = document.getElementById(`${player.id}-question-text`);
+            const optsContainer = document.getElementById(`${player.id}-options-container`);
+            const feedback = document.getElementById(`${player.id}-feedback-banner`);
+
+            qText.innerText = player.currentQuestion.soal;
+            optsContainer.innerHTML = '';
+            feedback.classList.add('hidden');
+
+            player.currentQuestion.pilihan.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'w-full text-left p-2.5 rounded-xl bg-slate-900 hover:bg-cyan-900/70 border border-cyan-500/30 text-xs font-semibold text-slate-100 transition flex items-center justify-between group';
+                btn.innerHTML = `
+                    <span>${opt}</span>
+                    <i class="fa-solid fa-circle-chevron-right text-cyan-400 opacity-0 group-hover:opacity-100 transition"></i>
+                `;
+                btn.onclick = () => handleAnswerSubmit(player, idx);
+                optsContainer.appendChild(btn);
+            });
+
+            modal.classList.remove('hidden');
+
+            // Reset and start 25-second countdown timer
+            player.timeLeft = 25;
+            updateTimerUI(player);
+            resumePlayerTimer(player);
+        }
+
+        function updateTimerUI(player) {
+            const textEl = document.getElementById(`${player.id}-timer-text`);
+            const barEl = document.getElementById(`${player.id}-timer-bar`);
+            
+            textEl.innerText = `${player.timeLeft}s`;
+            const pct = (player.timeLeft / 25) * 100;
+            barEl.style.width = `${pct}%`;
+
+            if (player.timeLeft <= 5) {
+                barEl.className = "bg-gradient-to-r from-red-600 to-rose-700 h-full w-full transition-all duration-1000 linear animate-pulse";
+            } else {
+                barEl.className = "bg-gradient-to-r from-amber-400 to-red-500 h-full w-full transition-all duration-1000 linear";
+            }
+        }
+
+        // ANSWER VALIDATION & HP/STREAK LOGIC
+        function handleAnswerSubmit(player, chosenIdx) {
+            if (isGamePaused) return;
+            clearInterval(player.timerInterval);
+            const isCorrect = (chosenIdx === player.currentQuestion.jawaban);
+            const feedback = document.getElementById(`${player.id}-feedback-banner`);
+            const modal = document.getElementById(`${player.id}-question-modal`);
+
+            feedback.classList.remove('hidden');
 
             if (isCorrect) {
-                soundEngine.playCorrect();
+                playSound('correct');
                 player.score += 10;
-                player.streak += 1;
-                if (player.streak > player.maxStreak) player.maxStreak = player.streak;
+                player.streak++;
 
+                feedback.className = "text-center py-2 font-bold text-xs rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-500/40";
+                feedback.innerText = "✅ JAWABAN BENAR! (+10 POIN)";
+
+                // HP Bonus Rule: +1 HP on 5 consecutive correct answers
                 if (player.streak % 5 === 0) {
-                    player.hp += 1;
-                    feedbackEl.className = 'block bg-emerald-500/90 text-white font-bold p-1 rounded-lg text-[10px] sm:text-xs animate-bounce flex-shrink-0';
-                    feedbackEl.innerText = `ߎ BENAR! (+10) STREAK 5X! BONUS +1 HP! ❤️`;
-                } else {
-                    feedbackEl.className = 'block bg-green-600/90 text-white font-bold p-1 rounded-lg text-[10px] sm:text-xs flex-shrink-0';
-                    feedbackEl.innerText = `✅ BENAR! (+10 Poin) Streak: ߔ ${player.streak}/5`;
+                    player.hp = Math.min(player.maxHp, player.hp + 1);
+                    feedback.innerText += " 🔥 BONUS STREAK! (+1 HP)";
                 }
-
-                if (buttons[chosenIdx]) {
-                    buttons[chosenIdx].className = 'w-full p-1 sm:p-1.5 bg-green-600 text-white font-bold text-[10px] sm:text-xs rounded-lg border border-green-300 flex items-center gap-1.5 leading-tight min-h-[34px]';
-                }
-
             } else {
-                soundEngine.playWrong();
+                playSound('wrong');
                 player.score = Math.max(0, player.score - 10);
-                player.hp -= 1;
-                player.streak = 0;
+                player.hp--;
+                player.streak = 0; // Reset streak on mistake
 
-                feedbackEl.className = 'block bg-red-600/90 text-white font-bold p-1 rounded-lg text-[10px] sm:text-xs flex-shrink-0';
-                if (chosenIdx === -1) {
-                    feedbackEl.innerText = `⏳ WAKTU HABIS! (-10 Poin, HP -1)`;
-                } else {
-                    feedbackEl.innerText = `❌ SALAH! (-10 Poin, HP -1)`;
-                    if (buttons[chosenIdx]) {
-                        buttons[chosenIdx].className = 'w-full p-1 sm:p-1.5 bg-red-600 text-white font-bold text-[10px] sm:text-xs rounded-lg border border-red-300 flex items-center gap-1.5 leading-tight min-h-[34px]';
-                    }
-                }
-
-                if (buttons[currentQ.jawaban]) {
-                    buttons[currentQ.jawaban].className = 'w-full p-1 sm:p-1.5 bg-emerald-700 text-white font-bold text-[10px] sm:text-xs rounded-lg border border-emerald-300 flex items-center gap-1.5 leading-tight min-h-[34px]';
-                }
+                const correctTxt = player.currentQuestion.pilihan[player.currentQuestion.jawaban];
+                feedback.className = "text-center py-2 font-bold text-xs rounded-xl bg-rose-500/20 text-rose-300 border border-rose-500/40";
+                feedback.innerText = `❌ SALAH! (-10 Pts & HP -1) | Benar: ${correctTxt}`;
             }
 
-            player.currentQuestionIndex++;
+            updatePlayerHeaderUI(player);
 
             setTimeout(() => {
-                document.getElementById(`${prefix}-quizModal`).classList.add('hidden');
-                player.isAnsweringQuiz = false;
-                renderPlayerBoard(player);
+                modal.classList.add('hidden');
+                checkGameOverCondition();
+            }, 1400);
+        }
 
-                if (player.remainingTilesCount <= 0) {
-                    triggerGameOver(player.id, `${player.name} BERHASIL MEMBERSIHKAN SELURUH UBIN! SANG JUARA!`);
-                } else if (player.hp <= 0) {
-                    const winnerId = player.id === 'pA' ? 'pB' : 'pA';
-                    const winnerName = player.id === 'pA' ? 'PEMAIN B' : 'PEMAIN A';
-                    triggerGameOver(winnerId, `${player.name} kehabisan HP! ${winnerName} MENANG!`);
+        function handleAnswerTimeout(player) {
+            playSound('wrong');
+            player.score = Math.max(0, player.score - 10);
+            player.hp--;
+            player.streak = 0;
+
+            const feedback = document.getElementById(`${player.id}-feedback-banner`);
+            const modal = document.getElementById(`${player.id}-question-modal`);
+            feedback.classList.remove('hidden');
+            feedback.className = "text-center py-2 font-bold text-xs rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500/40";
+            feedback.innerText = "⏱️ WAKTU HABIS! (-10 Pts & HP -1)";
+
+            updatePlayerHeaderUI(player);
+
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                checkGameOverCondition();
+            }, 1400);
+        }
+
+        // UPDATE HEADER STATS UI
+        function updatePlayerHeaderUI(player) {
+            // Score
+            document.getElementById(`${player.id}-score-display`).innerText = player.score;
+
+            // Streak
+            document.getElementById(`${player.id}-streak-count`).innerText = `${player.streak % 5}/5 🔥`;
+
+            // HP Hearts
+            const hpContainer = document.getElementById(`${player.id}-hp-container`);
+            hpContainer.innerHTML = '';
+            for (let i = 0; i < player.maxHp; i++) {
+                if (i < player.hp) {
+                    hpContainer.innerHTML += `<i class="fa-solid fa-heart text-red-500 text-sm animate-pulse"></i>`;
+                } else {
+                    hpContainer.innerHTML += `<i class="fa-regular fa-heart text-slate-600 text-sm"></i>`;
                 }
-            }, 1600);
-        }
-
-        function triggerGameOver(winnerId, reasonText) {
-            isGameOver = true;
-            playerA.clearTimer();
-            playerB.clearTimer();
-
-            soundEngine.playWin();
-
-            const winner = winnerId === 'pA' ? playerA : playerB;
-
-            document.getElementById('resultTitle').innerText = `${winner.name} MENANG! ߎ`;
-            document.getElementById('resultReason').innerText = reasonText;
-
-            document.getElementById('resA-score').innerText = playerA.score;
-            document.getElementById('resA-hp').innerText = playerA.hp;
-            document.getElementById('resA-streak').innerText = playerA.maxStreak;
-
-            document.getElementById('resB-score').innerText = playerB.score;
-            document.getElementById('resB-hp').innerText = playerB.hp;
-            document.getElementById('resB-streak').innerText = playerB.maxStreak;
-
-            document.getElementById('resultModal').classList.remove('hidden');
-        }
-
-        function togglePauseModal() {
-            isGamePaused = !isGamePaused;
-            if (isGamePaused) {
-                alertModal("Game Dijeda (Pause)", "Tekan Lanjutkan untuk meneruskan permainan.");
             }
         }
 
-        function confirmExitToHome() {
-            document.getElementById('confirmExitModal').classList.remove('hidden');
-        }
+        // CHECK GAME OVER OR BOARD CLEARED
+        function checkGameOverCondition() {
+            let isGameOver = false;
+            let winnerText = "";
+            let subText = "";
 
-        function closeConfirmExitModal() {
-            document.getElementById('confirmExitModal').classList.add('hidden');
-        }
+            if (player1.hp <= 0) {
+                isGameOver = true;
+                winnerText = `${player2.name.toUpperCase()} MENANG!`;
+                subText = `${player1.name} kehabisan HP (Kalah Duel).`;
+            } else if (player2.hp <= 0) {
+                isGameOver = true;
+                winnerText = `${player1.name.toUpperCase()} MENANG!`;
+                subText = `${player2.name} kehabisan HP (Kalah Duel).`;
+            } else if (isBoardEmpty(player1.grid)) {
+                isGameOver = true;
+                winnerText = `${player1.name.toUpperCase()} BERHASIL MEMBERSIHKAN PAPAN!`;
+                subText = `Papan P1 bersih sempurna dengan skor akhir ${player1.score}!`;
+            } else if (isBoardEmpty(player2.grid)) {
+                isGameOver = true;
+                winnerText = `${player2.name.toUpperCase()} BERHASIL MEMBERSIHKAN PAPAN!`;
+                subText = `Papan P2 bersih sempurna dengan skor akhir ${player2.score}!`;
+            }
 
-        function confirmExitAction() {
-            closeConfirmExitModal();
-            exitToHome();
-        }
+            if (isGameOver) {
+                document.getElementById('winner-title').innerText = winnerText;
+                document.getElementById('winner-subtitle').innerText = subText;
+                document.getElementById('p1-summary-name').innerText = player1.name;
+                document.getElementById('p1-summary-score').innerText = `${player1.score} Pts`;
+                document.getElementById('p2-summary-name').innerText = player2.name;
+                document.getElementById('p2-summary-score').innerText = `${player2.score} Pts`;
 
-        function exitToHome() {
-            playerA.clearTimer();
-            playerB.clearTimer();
-            document.getElementById('gameplayScreen').classList.add('hidden');
-            document.getElementById('resultModal').classList.add('hidden');
-            document.getElementById('mainMenuScreen').classList.remove('hidden');
-        }
-
-        function restartGame() {
-            initDuelGame();
-        }
-
-        function toggleSound() {
-            soundEngine.enabled = !soundEngine.enabled;
-            const soundBtn = document.getElementById('soundBtn');
-            if (soundEngine.enabled) {
-                soundBtn.innerHTML = '<i class="fa-solid fa-volume-high text-xs sm:text-sm"></i>';
-            } else {
-                soundBtn.innerHTML = '<i class="fa-solid fa-volume-xmark text-xs sm:text-sm"></i>';
+                document.getElementById('game-over-modal').classList.remove('hidden');
+                playSound('correct');
             }
         }
 
-        function openHowToPlay() {
-            document.getElementById('howToPlayModal').classList.remove('hidden');
-        }
-        function closeHowToPlay() {
-            document.getElementById('howToPlayModal').classList.add('hidden');
-        }
-
-        function openAbout() {
-            document.getElementById('aboutModal').classList.remove('hidden');
-        }
-        function closeAbout() {
-            document.getElementById('aboutModal').classList.add('hidden');
-        }
-
-        function alertModal(title, message) {
-            const div = document.createElement('div');
-            div.className = 'fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4';
-            div.innerHTML = `
-                <div class="glass-panel max-w-xs w-full rounded-2xl p-4 text-center space-y-3 border border-sea-300">
-                    <h3 class="font-fredoka text-lg font-bold text-yellow-300">${title}</h3>
-                    <p class="text-xs text-sea-100">${message}</p>
-                    <button onclick="this.parentElement.parentElement.remove(); isGamePaused = false;" class="w-full py-2 bg-sea-500 hover:bg-sea-400 font-fredoka font-bold text-xs text-white rounded-xl">
-                        Lanjutkan
-                    </button>
-                </div>
-            `;
-            document.body.appendChild(div);
-        }
-
-        function createOceanBubbles() {
-            const container = document.getElementById('oceanBubbles');
-            container.innerHTML = '';
-            for (let i = 0; i < 20; i++) {
-                const bubble = document.createElement('div');
-                bubble.className = 'bubble';
-                const size = Math.random() * 30 + 10;
-                bubble.style.width = `${size}px`;
-                bubble.style.height = `${size}px`;
-                bubble.style.left = `${Math.random() * 100}%`;
-                bubble.style.animationDuration = `${Math.random() * 8 + 6}s`;
-                bubble.style.animationDelay = `${Math.random() * 5}s`;
-                container.appendChild(bubble);
+        function isBoardEmpty(grid) {
+            for (let r = 0; r < GRID_ROWS; r++) {
+                for (let c = 0; c < GRID_COLS; c++) {
+                    if (grid[r][c] !== null) return false;
+                }
             }
+            return true;
         }
 
+        // Initialize on Load
         window.onload = function() {
-            createOceanBubbles();
-        };
-
-        window.onresize = function() {
-            if (!isGameOver && !document.getElementById('gameplayScreen').classList.contains('hidden')) {
-                renderAll();
-            }
-        };
+            console.log("Mahjong Match-3 Duel PJOK SD - Updated with Fullscreen Control on Main Menu!");
+        }
     </script>
 </body>
 </html>
-```
